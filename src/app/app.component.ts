@@ -60,7 +60,6 @@ export class AppComponent implements OnInit{
   
    createAndUpdatePolugon() {
      var data,polyCoord; 
-      //On Create
       this.map.on('draw.create',()=>{
         data = this.draw.getAll();
         polyCoord = turf.coordAll(data);
@@ -71,11 +70,9 @@ export class AppComponent implements OnInit{
           }
         }
       })
-      //On Delete
       this.map.on('draw.delete',()=>{
         console.log('Polygon Deleted!');
       })
-      //On Update
       this.map.on('draw.update',()=>{
         data = this.draw.getAll();
         polyCoord = turf.coordAll(data);
