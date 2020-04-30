@@ -24,60 +24,58 @@ export class AppComponent implements OnInit{
         displayControlsDefault: false,
         controls: {
             polygon: true,
-            trash: true
+            trash: true,
+            point:true,
         }
     });
 
   ngOnInit() {
 
     (mapboxgl as any).accessToken = environment.mapboxKey;
-
     this.map = new mapboxgl.Map({
     container: 'map-mapbox', 
     style: 'mapbox://styles/mapbox/streets-v11',
-    //style: 'mapbox://styles/mapbox/satellite-v9',
     center: [-0.7008827,51.5626992],
-    //zoom: 13,
-    maxBounds : this.bounds,  //Restrict map panning to an area
+    maxBounds : this.bounds,  //Restrict map panning to an area 
     interactive: false       //Display a non-interactive map
     });
 
-    this.createAndDragMarker(-0.7008827,51.5626992);
+   
     this.map.addControl(this.draw,'top-right');
+    this.map.addControl(new mapboxgl.NavigationControl());
     this.createAndUpdatePolugon();
-  }
-
-  createAndDragMarker(lng:number, lat:number){
-    const marker = new mapboxgl.Marker({
-      draggable: true
-      }).setLngLat([lng, lat])
-      .addTo(this.map);
-
-      marker.on('dragend',()=>{
-        console.log('Coordinates-> '+marker.getLngLat());
-      })
-  }
-  
+  }  
    createAndUpdatePolugon() {
      var data,polyCoord; 
+     
       this.map.on('draw.create',()=>{
         data = this.draw.getAll();
         polyCoord = turf.coordAll(data);
+
         if (data.features.length > 0) {
-          console.log('Polygon Created! With coordinates:');
-          for (var i = 0; i < polyCoord.length-1; i++) {
+             //draw_point 
+            if(this.draw.getMode()=='draw_point'){ 
+              console.log('Points Created! With coordinates:');
+              for (var i = 1; i <= polyCoord.length; i++) {
+              console.log(polyCoord[i-1]);
+              }
+            }
+          else { //draw_polygon
+            console.log('Polygon Created! With coordinates:');
+            for (var i = 0; i < polyCoord.length-1; i++) {
             console.log(polyCoord[i]);
+            }
           }
         }
       })
       this.map.on('draw.delete',()=>{
-        console.log('Polygon Deleted!');
+        console.log('Deleted!');
       })
       this.map.on('draw.update',()=>{
         data = this.draw.getAll();
         polyCoord = turf.coordAll(data);
         if (data.features.length > 0) {
-          console.log('Polygon Updated! With coordinates:');
+          console.log(' Updated! With coordinates:');
           for (var i = 0; i < polyCoord.length-1; i++) {
             console.log(polyCoord[i]);
           }
