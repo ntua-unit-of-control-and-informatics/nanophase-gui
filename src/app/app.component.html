@@ -1,3 +1,33 @@
-<div id="map-mapbox"></div>
-<div id="calculated-area"></div>
+<!-- <mat-toolbar color="primary">
+    <span>My Application</span>
+</mat-toolbar> -->
+<app-base-map></app-base-map>
+<div *ngIf="loggedIn; else loggedOut" class="logged_in">
 
+  <mat-button-toggle-group #group="matButtonToggleGroup" (change)="themeChanged($event)" [(value)] = "selectedTheme" class="theme-t">
+    <mat-button-toggle value="dark-theme" aria-label="Text align left" >
+      Dark
+    </mat-button-toggle>
+    <mat-button-toggle value="default-theme" aria-label="Text align center">
+      Light
+    </mat-button-toggle>
+  </mat-button-toggle-group>
+
+</div>
+
+<ng-template #loggedOut>
+  <mat-card class="login-card">
+    <mat-card-header>
+      <mat-card-title>Welcome</mat-card-title>
+      <mat-card-subtitle>To Nano Fase</mat-card-subtitle>
+    </mat-card-header>
+    <mat-card-content>
+      <p>
+        A platform for exposure simulations
+      </p>
+    </mat-card-content>
+    <mat-card-actions>
+      <button mat-button color="accent" class="login-button" (click)="login()">Login</button>
+    </mat-card-actions>
+  </mat-card>
+</ng-template>

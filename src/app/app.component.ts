@@ -1,9 +1,10 @@
 import { environment } from './../environments/environment.prod';
 import { Component, OnInit } from '@angular/core';
-import * as mapboxgl from 'mapbox-gl';
-declare var require: any;
-var MapboxDraw = require('@mapbox/mapbox-gl-draw');
-var turf = require('@turf/turf');
+import { OidcSecurityService, PublicConfiguration, OidcClientNotification, PublicEventsService, EventTypes } from 'angular-auth-oidc-client';
+import { Subscription, Observable } from 'rxjs';
+import { filter } from 'rxjs/operators';
+import { SessionService } from './session/session.service';
+import { MatButtonToggle } from '@angular/material';
 
 @Component({
   selector: 'app-root',
@@ -13,73 +14,65 @@ var turf = require('@turf/turf');
 
 export class AppComponent implements OnInit{
 
-  map:mapboxgl.Map;
+  loggedIn:boolean;
+  subscription:Subscription;
+  isAuthorizedSubscription: Subscription;
+  isAuthorized: boolean;
 
-  bounds = new mapboxgl.LngLatBounds(
-    new mapboxgl.LngLat(-0.7158816128126944, 51.554854997301135),// Notio-Dutika coordinates
-    new mapboxgl.LngLat(-0.6872141628605277, 51.5663540296205)  // Borio-Anatolika coordinates
-  );
-  
-   draw = new MapboxDraw({
-        displayControlsDefault: false,
-        controls: {
-            polygon: true,
-            trash: true,
-            point:true,
-        }
-    });
+  configuration: PublicConfiguration;
+  userDataChanged$: Observable<OidcClientNotification<any>>;
+  userData$: Observable<any>;
+  isAuthenticated$: Observable<boolean>;
+  checkSessionChanged$: Observable<boolean>;
+  checkSessionChanged: any;
 
-  ngOnInit() {
+  selectedTheme:string = "default-theme"
 
-    (mapboxgl as any).accessToken = environment.mapboxKey;
-    this.map = new mapboxgl.Map({
-    container: 'map-mapbox', 
-    style: 'mapbox://styles/mapbox/streets-v11',
-    center: [-0.7008827,51.5626992],
-    maxBounds : this.bounds,  //Restrict map panning to an area 
-    interactive: false       //Display a non-interactive map
-    });
+  constructor(
+    public oidcSecurityService: OidcSecurityService,
+    private eventService: PublicEventsService,
+    private _sessionService:SessionService
+  ){
 
-   
-    this.map.addControl(this.draw,'top-right');
-    this.map.addControl(new mapboxgl.NavigationControl());
-    this.createAndUpdatePolugon();
-  }  
-   createAndUpdatePolugon() {
-     var data,polyCoord; 
-     
-      this.map.on('draw.create',()=>{
-        data = this.draw.getAll();
-        polyCoord = turf.coordAll(data);
-
-        if (data.features.length > 0) {
-             //draw_point 
-            if(this.draw.getMode()=='draw_point'){ 
-              console.log('Points Created! With coordinates:');
-              for (var i = 1; i <= polyCoord.length; i++) {
-              console.log(polyCoord[i-1]);
-              }
-            }
-          else { //draw_polygon
-            console.log('Polygon Created! With coordinates:');
-            for (var i = 0; i < polyCoord.length-1; i++) {
-            console.log(polyCoord[i]);
-            }
-          }
-        }
-      })
-      this.map.on('draw.delete',()=>{
-        console.log('Deleted!');
-      })
-      this.map.on('draw.update',()=>{
-        data = this.draw.getAll();
-        polyCoord = turf.coordAll(data);
-        if (data.features.length > 0) {
-          console.log(' Updated! With coordinates:');
-          for (var i = 0; i < polyCoord.length-1; i++) {
-            console.log(polyCoord[i]);
-          }
-        }
-      })
   }
+
+  ngOnInit( ) {
+     this._sessionService.getTheme().subscribe(them=>{
+       this.selectedTheme = them
+     })
+    this.isAuthorizedSubscription = this.oidcSecurityService.isAuthenticated$.subscribe(
+      (isAuthorized: boolean) => {
+        if(isAuthorized === true){
+          this.loggedIn = true;
+        }else{
+          this.loggedIn = false;
+        }
+      });
+      this.configuration = this.oidcSecurityService.configuration;
+      this.userData$ = this.oidcSecurityService.userData$;
+      this.isAuthenticated$ = this.oidcSecurityService.isAuthenticated$;
+      this.checkSessionChanged$ = this.oidcSecurityService.checkSessionChanged$;
+
+      this.oidcSecurityService.checkAuth().subscribe((isAuthenticated) => console.log('app authenticated', isAuthenticated));
+
+      this.eventService
+          .registerForEvents()
+          .pipe(filter((notification) => notification.type === EventTypes.CheckSessionReceived))
+          .subscribe((value) => console.log('CheckSessionReceived with value from app', value));
+  }  
+
+  login() {
+    this.oidcSecurityService.authorize();
+  } 
+
+  logout() {
+      this.oidcSecurityService.logoff();
+  }
+
+  themeChanged(event:MatButtonToggle){
+    // this.selectedTheme = event.value
+    console.log(event.value)
+    this._sessionService.set('theme', event.value)
+  }
+
 }
