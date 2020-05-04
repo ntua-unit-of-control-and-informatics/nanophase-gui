@@ -18,13 +18,12 @@
             "main": "src/main.ts",
             "polyfills": "src/polyfills.ts",
             "tsConfig": "tsconfig.app.json",
-            "aot": false,
+            "aot": true,
             "assets": [
               "src/favicon.ico",
               "src/assets"
             ],
             "styles": [
-             
               "src/styles.scss"
             ],
             "scripts": []
@@ -42,7 +41,6 @@
               "sourceMap": false,
               "extractCss": true,
               "namedChunks": false,
-              "aot": true,
               "extractLicenses": true,
               "vendorChunk": false,
               "buildOptimizer": true,
@@ -90,7 +88,6 @@
               "src/assets"
             ],
             "styles": [
-              
               "src/styles.scss"
             ],
             "scripts": []
@@ -124,5 +121,8 @@
       }
     }
   },
-  "defaultProject": "mapboxApp"
+  "defaultProject": "mapboxApp",
+  "cli": {
+    "analytics": "65743d79-0c13-4938-8e85-b080948e808a"
+  }
 }
