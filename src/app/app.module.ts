@@ -109,7 +109,7 @@ export function configureAuth(oidcConfigService: OidcConfigService, httpClient: 
               // forbiddenRoute: customConfig.baseurl,
               // unauthorizedRoute: customConfig.baseurl,
               logLevel: LogLevel.Error, // LogLevel.Debug,
-              maxIdTokenIatOffsetAllowedInSeconds: 30,
+              maxIdTokenIatOffsetAllowedInSeconds: 60,
               historyCleanupOff: true,
               autoUserinfo: false,
           };
