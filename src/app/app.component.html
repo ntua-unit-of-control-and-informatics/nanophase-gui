@@ -1,8 +1,14 @@
 <!-- <mat-toolbar color="primary">
     <span>My Application</span>
 </mat-toolbar> -->
+
+
+
 <app-base-map></app-base-map>
+
 <div *ngIf="loggedIn; else loggedOut" class="logged_in">
+
+  <app-mains></app-mains>
 
   <mat-button-toggle-group #group="matButtonToggleGroup" (change)="themeChanged($event)" [(value)] = "selectedTheme" class="theme-t">
     <mat-button-toggle value="dark-theme" aria-label="Text align left" >

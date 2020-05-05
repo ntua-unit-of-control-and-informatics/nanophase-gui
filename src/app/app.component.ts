@@ -37,9 +37,7 @@ export class AppComponent implements OnInit{
   }
 
   ngOnInit( ) {
-     this._sessionService.getTheme().subscribe(them=>{
-       this.selectedTheme = them
-     })
+    this.selectedTheme = this._sessionService.get('theme')
     this.isAuthorizedSubscription = this.oidcSecurityService.isAuthenticated$.subscribe(
       (isAuthorized: boolean) => {
         if(isAuthorized === true){
@@ -70,8 +68,6 @@ export class AppComponent implements OnInit{
   }
 
   themeChanged(event:MatButtonToggle){
-    // this.selectedTheme = event.value
-    console.log(event.value)
     this._sessionService.set('theme', event.value)
   }
 

@@ -3,6 +3,8 @@ import { Component, OnInit } from '@angular/core';
 import * as mapboxgl from 'mapbox-gl';
 import { environment } from 'src/environments/environment.prod';
 import { OidcSecurityService } from 'angular-auth-oidc-client';
+import { SessionService } from '../session/session.service';
+import { Subscription } from 'rxjs';
 declare var require: any;
 var MapboxDraw = require('@mapbox/mapbox-gl-draw');
 var turf = require('@turf/turf');
@@ -17,6 +19,8 @@ export class BaseMapComponent implements OnInit {
   map:mapboxgl.Map;
 
   isEnabled:boolean = false;
+  subscription:Subscription;
+
 
   bounds = new mapboxgl.LngLatBounds(
     new mapboxgl.LngLat(-1.390769, 51.291669),// Notio-Dutika coordinates
@@ -32,35 +36,75 @@ export class BaseMapComponent implements OnInit {
         }
     });
 
-    constructor(private _oidcService:OidcSecurityService){
+    constructor(private _oidcService:OidcSecurityService
+      , public sessionService:SessionService){
 
     }
 
     ngOnInit() {
       (mapboxgl as any).accessToken = environment.mapboxKey;
-      this.map = new mapboxgl.Map({
-      container: 'map-mapbox', 
-      style: 'mapbox://styles/mapbox/streets-v11',
-      // center: [-0.7008827,51.5626992],
-      maxBounds : this.bounds,  //Restrict map panning to an area 
-      interactive: true      //Display a non-interactive map
-      });
+      let theme = this.sessionService.get('theme')
+      if(theme === "default-theme"){
+        let mapStyle = 'mapbox://styles/mapbox/light-v9'
+        this.map = new mapboxgl.Map({
+          container: 'map-mapbox', 
+          style: mapStyle,
+          // center: [-0.7008827,51.5626992],
+          maxBounds : this.bounds,  //Restrict map panning to an area 
+          interactive: true      //Display a non-interactive map
+          });
+          this._oidcService.isAuthenticated$.subscribe(
+            (isAuthorized: boolean) => {
+              console.log(isAuthorized)
+              if(isAuthorized === true && this.isEnabled === false){
+                this.map.addControl(this.draw,'top-right');
+                this.map.addControl(new mapboxgl.NavigationControl());
+                this.createAndUpdatePolugon();
+                this.isEnabled = true
+              }else if(isAuthorized === false && typeof this.map != 'undefined'){
+                this.isEnabled = false
+              }
+            });
+      }
+      if(theme === "dark-theme"){
+        let mapStyle = 'mapbox://styles/mapbox/dark-v9'
+        this.map = new mapboxgl.Map({
+          container: 'map-mapbox', 
+          style: mapStyle,
+          // center: [-0.7008827,51.5626992],
+          maxBounds : this.bounds,  //Restrict map panning to an area 
+          interactive: true      //Display a non-interactive map
+          });
+          this._oidcService.isAuthenticated$.subscribe(
+            (isAuthorized: boolean) => {
+              console.log(isAuthorized)
+              if(isAuthorized === true && this.isEnabled === false){
+                this.map.addControl(this.draw,'top-right');
+                this.map.addControl(new mapboxgl.NavigationControl());
+                this.createAndUpdatePolugon();
+                this.isEnabled = true
+              }else if(isAuthorized === false && typeof this.map != 'undefined'){
+                this.isEnabled = false
+              }
+            });
+      }
+      this.subscription= this.sessionService
+      .getTheme().subscribe(theme => {
+        if(theme.data === "default-theme"){
+          let mapStyle = 'mapbox://styles/mapbox/light-v9'
+          this.map.setStyle(mapStyle) 
 
-      this._oidcService.isAuthenticated$.subscribe(
-        (isAuthorized: boolean) => {
-          console.log(isAuthorized)
-          if(isAuthorized === true && this.isEnabled === false){
-            this.map.addControl(this.draw,'top-right');
-            this.map.addControl(new mapboxgl.NavigationControl());
-            this.createAndUpdatePolugon();
-            this.isEnabled = true
-          }else if(isAuthorized === false && typeof this.map != 'undefined'){
-            this.isEnabled = false
-            // this.map.removeControl(this.draw)
-            // this.map.removeControl(new mapboxgl.NavigationControl());
-          }
-        });
-      
+        }
+
+        if(theme.data === "dark-theme"){
+          let mapStyle = 'mapbox://styles/mapbox/dark-v9'
+          this.map.setStyle(mapStyle) 
+          
+        }
+
+      })
+
+
     }   
 
   createAndUpdatePolugon() {
@@ -100,6 +144,10 @@ export class BaseMapComponent implements OnInit {
           }
         }
       })
+  }
+
+  themeChange(){
+
   }
 
 }

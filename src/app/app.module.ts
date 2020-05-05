@@ -2,7 +2,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NgModule,APP_INITIALIZER } from '@angular/core';
 import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { MatToolbarModule, MatButtonModule, MatCardModule, MatButtonToggleGroup, MatButtonToggleModule } from '@angular/material/';
+import { MatToolbarModule, MatButtonModule, MatCardModule, MatButtonToggleGroup, MatButtonToggleModule, MatExpansionModule, MatFormFieldModule, MatInputModule } from '@angular/material/';
 import { BaseMapComponent } from './base-map/base-map.component'
 import { Subscription } from 'rxjs';
 import { OverlayContainer } from '@angular/cdk/overlay';
@@ -13,15 +13,16 @@ import { configf } from './models/config';
 import { filter } from 'rxjs/operators';
 import { RouterModule } from '@angular/router';
 import { SessionService } from './session/session.service';
-
+import { MainsComponent } from './mains/mains.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-    BaseMapComponent
+    BaseMapComponent,
+    MainsComponent
   ],
   imports: [
-    BrowserModule,HttpClientModule,
+    BrowserModule,HttpClientModule,MatExpansionModule,MatFormFieldModule,MatInputModule,
     BrowserAnimationsModule,MatToolbarModule, MatButtonModule,MatCardModule,MatButtonToggleModule,
     RouterModule.forRoot([
       { path: '', component: AppComponent },
@@ -56,22 +57,29 @@ export class AppModule {
   {
     var _theme = sessionService.get('theme');
     if(_theme === 'dark-theme'){
+      
+      // this.overlayContainer.getContainerElement().classList.remove("cdk-overlay-container");
       this.overlayContainer.getContainerElement().classList.remove('default-theme'); 
+      // this.overlayContainer.getContainerElement().classList.add('dark-theme');
       this.overlayContainer.getContainerElement().classList.add('dark-theme');
     }else{
+      // this.overlayContainer.getContainerElement().classList.remove("cdk-overlay-container");
       this.overlayContainer.getContainerElement().classList.remove('dark-theme');
       this.overlayContainer.getContainerElement().classList.add('default-theme');
     }
 
     this.subscription= this.sessionService
     .getTheme().subscribe(theme => {
+      console.log(this.overlayContainer.getContainerElement().classList)
       var the = (<any>Object).values(theme);
       if(the[0] === 'dark-theme'){
         this.theme = 'dark-theme';
+        // this.overlayContainer.getContainerElement().classList.remove("cdk-overlay-container");
         this.overlayContainer.getContainerElement().classList.remove('default-theme'); 
         this.overlayContainer.getContainerElement().classList.add('dark-theme');
       }else{
         this.theme = 'default-theme'
+        // this.overlayContainer.getContainerElement().classList.remove("cdk-overlay-container");
         this.overlayContainer.getContainerElement().classList.remove('dark-theme');
         this.overlayContainer.getContainerElement().classList.add('default-theme');
       }
