@@ -1,0 +1,90 @@
+<div *ngIf="feature" class="emissions-main">
+
+  <div mat-subheader class="header">Emissions data</div>
+
+  <div *ngIf="feature.geometry.type === 'Point'">
+
+    <mat-form-field class="emission-form-width">
+      <mat-label>Title</mat-label>
+      <input matInput placeholder="Emission">
+      <mat-hint>Emissions title</mat-hint>
+    </mat-form-field>
+
+    <mat-form-field class="emission-form-width">
+      <mat-label>Description</mat-label>
+      <input matInput placeholder="Emission">
+      <mat-hint>Emission description</mat-hint>
+    </mat-form-field>
+
+    <mat-form-field class="emission-form-width">
+      <mat-label>Nanomaterial</mat-label>
+      <mat-select [(value)]="nanomaterial" class="emission-form-width">
+        <mat-option value="TiO2">TiO2</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field class="emission-form-width">
+      <mat-label>Compartment</mat-label>
+      <mat-select [(value)]="compartment" class="emission-form-width">
+        <mat-option value="Surface water">Surface water</mat-option>
+        <mat-option value="Soil">Soil</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field class="emission-form-width">
+      <mat-label>Form</mat-label>
+      <mat-select [(value)]="form" class="emission-form-width">
+        <mat-option value="Pristine">Pristine</mat-option>
+        <mat-option value="Matrix embedded">Matrix embedded</mat-option>
+        <mat-option value="Transformed">Transformed</mat-option>
+        <mat-option value="Dissolved">Dissolved</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field class="emission-form-width">
+      <mat-label>Temporal Profile</mat-label>
+      <mat-select [(value)]="temporalProfile" class="emission-form-width">
+        <mat-option value="P1">P1</mat-option>
+        <mat-option value="P2">P2</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field class="emission-form-width">
+        <mat-label>Emission</mat-label>
+        <input matInput placeholder="Emission">
+        <mat-hint>Kg per square meter per year</mat-hint>
+      </mat-form-field>
+
+
+  </div>
+
+  <div *ngIf="feature.geometry.type === 'Polygon'">
+
+    <mat-form-field class="emission-form-width">
+      <mat-label>Title</mat-label>
+      <input matInput placeholder="Emission">
+      <mat-hint>Emissions title</mat-hint>
+    </mat-form-field>
+
+    <mat-form-field class="emission-form-width">
+      <mat-label>Description</mat-label>
+      <input matInput placeholder="Emission">
+      <mat-hint>Emission description</mat-hint>
+    </mat-form-field>
+
+    <mat-form-field class="emission-form-width"> 
+      <mat-label>Nanomaterial</mat-label>
+      <mat-select [(value)]="nanomaterial" class="emission-form-width">
+        <mat-option value="TiO2">TiO2</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+
+    <mat-form-field class="emission-form-width">
+      <mat-label>Emission</mat-label>
+      <input matInput placeholder="Emission">
+      <mat-hint>Kg per square meter per year</mat-hint>
+    </mat-form-field>
+
+  </div>
+</div>

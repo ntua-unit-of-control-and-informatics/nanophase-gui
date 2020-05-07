@@ -2,7 +2,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NgModule,APP_INITIALIZER } from '@angular/core';
 import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { MatToolbarModule, MatButtonModule, MatCardModule, MatButtonToggleGroup, MatButtonToggleModule, MatExpansionModule, MatFormFieldModule, MatInputModule } from '@angular/material/';
+import { MatToolbarModule, MatButtonModule, MatCardModule, MatButtonToggleGroup, MatButtonToggleModule, MatExpansionModule, MatFormFieldModule, MatInputModule, MatBottomSheetModule, MatSelectModule } from '@angular/material/';
 import { BaseMapComponent } from './base-map/base-map.component'
 import { Subscription } from 'rxjs';
 import { OverlayContainer } from '@angular/cdk/overlay';
@@ -14,16 +14,18 @@ import { filter } from 'rxjs/operators';
 import { RouterModule } from '@angular/router';
 import { SessionService } from './session/session.service';
 import { MainsComponent } from './mains/mains.component';
+import { AddEmmisionsComponent } from './bottom-sheets/add-emmisions/add-emmisions.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     BaseMapComponent,
-    MainsComponent
+    MainsComponent,
+    AddEmmisionsComponent
   ],
   imports: [
-    BrowserModule,HttpClientModule,MatExpansionModule,MatFormFieldModule,MatInputModule,
-    BrowserAnimationsModule,MatToolbarModule, MatButtonModule,MatCardModule,MatButtonToggleModule,
+    BrowserModule,HttpClientModule,MatExpansionModule,MatFormFieldModule,MatInputModule,MatBottomSheetModule,MatSelectModule,
+    BrowserAnimationsModule,MatToolbarModule,MatInputModule,MatButtonModule,MatCardModule,MatButtonToggleModule,
     RouterModule.forRoot([
       { path: '', component: AppComponent },
       { path: 'home', component: AppComponent },
@@ -42,6 +44,7 @@ import { MainsComponent } from './mains/mains.component';
     },
     SessionService
   ],
+  exports:[MatInputModule, MatFormFieldModule],
   bootstrap: [AppComponent]
 })
 export class AppModule { 
@@ -70,7 +73,7 @@ export class AppModule {
 
     this.subscription= this.sessionService
     .getTheme().subscribe(theme => {
-      console.log(this.overlayContainer.getContainerElement().classList)
+      // console.log(this.overlayContainer.getContainerElement().classList)
       var the = (<any>Object).values(theme);
       if(the[0] === 'dark-theme'){
         this.theme = 'dark-theme';

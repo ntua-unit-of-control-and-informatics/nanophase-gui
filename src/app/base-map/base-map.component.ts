@@ -5,6 +5,7 @@ import { environment } from 'src/environments/environment.prod';
 import { OidcSecurityService } from 'angular-auth-oidc-client';
 import { SessionService } from '../session/session.service';
 import { Subscription } from 'rxjs';
+import { SheetsService } from '../bottom-sheets/sheets-services.service';
 declare var require: any;
 var MapboxDraw = require('@mapbox/mapbox-gl-draw');
 var turf = require('@turf/turf');
@@ -21,6 +22,7 @@ export class BaseMapComponent implements OnInit {
   isEnabled:boolean = false;
   subscription:Subscription;
 
+  draws:Object = {}
 
   bounds = new mapboxgl.LngLatBounds(
     new mapboxgl.LngLat(-1.390769, 51.291669),// Notio-Dutika coordinates
@@ -37,14 +39,15 @@ export class BaseMapComponent implements OnInit {
     });
 
     constructor(private _oidcService:OidcSecurityService
-      , public sessionService:SessionService){
+      , public sessionService:SessionService,
+      public bottomSheet:SheetsService){
 
     }
 
     ngOnInit() {
       (mapboxgl as any).accessToken = environment.mapboxKey;
       let theme = this.sessionService.get('theme')
-      if(theme === "default-theme"){
+      if(theme === "default-theme" ||  !theme){
         let mapStyle = 'mapbox://styles/mapbox/light-v9'
         this.map = new mapboxgl.Map({
           container: 'map-mapbox', 
@@ -88,7 +91,7 @@ export class BaseMapComponent implements OnInit {
               }
             });
       }
-      this.subscription= this.sessionService
+      this.subscription = this.sessionService
       .getTheme().subscribe(theme => {
         if(theme.data === "default-theme"){
           let mapStyle = 'mapbox://styles/mapbox/light-v9'
@@ -103,47 +106,64 @@ export class BaseMapComponent implements OnInit {
         }
 
       })
-
+      this.featureSelection()
 
     }   
 
   createAndUpdatePolugon() {
-     var data,polyCoord; 
+    //  var data,polyCoord; 
      
-      this.map.on('draw.create',()=>{
-        data = this.draw.getAll();
-        console.log(data)
-        polyCoord = turf.coordAll(data);
+      // this.map.on('draw.create',()=>{
+      //   data = this.draw.getAll();
+      //   console.log(data)
+      //   polyCoord = turf.coordAll(data);
 
-        if (data.features.length > 0) {
-             //draw_point 
-            if(this.draw.getMode()=='draw_point'){ 
-              console.log('Points Created! With coordinates:');
-              for (var i = 1; i <= polyCoord.length; i++) {
-              console.log(polyCoord[i-1]);
-              }
-            }
-          else { //draw_polygon
-            console.log('Polygon Created! With coordinates:');
-            for (var i = 0; i < polyCoord.length-1; i++) {
-            console.log(polyCoord[i]);
-            }
-          }
-        }
-      })
-      this.map.on('draw.delete',()=>{
-        console.log('Deleted!');
-      })
-      this.map.on('draw.update',()=>{
-        data = this.draw.getAll();
-        polyCoord = turf.coordAll(data);
-        if (data.features.length > 0) {
-          console.log(' Updated! With coordinates:');
-          for (var i = 0; i < polyCoord.length-1; i++) {
-            console.log(polyCoord[i]);
-          }
-        }
-      })
+      //   if (data.features.length > 0) {
+      //        //draw_point 
+      //       if(this.draw.getMode()=='draw_point'){ 
+      //         console.log('Points Created! With coordinates:');
+      //         for (var i = 1; i <= polyCoord.length; i++) {
+      //         console.log(polyCoord[i-1]);
+      //         }
+      //       }
+      //     else { //draw_polygon
+      //       console.log('Polygon Created! With coordinates:');
+      //       for (var i = 0; i < polyCoord.length-1; i++) {
+      //       console.log(polyCoord[i]);
+      //       }
+      //     }
+      //   }
+      // })
+      // this.map.on('draw.delete',()=>{
+      //   console.log('Deleted!');
+      // })
+      // this.map.on('draw.update',()=>{
+      //   data = this.draw.getAll();
+      //   polyCoord = turf.coordAll(data);
+      //   if (data.features.length > 0) {
+      //     console.log(' Updated! With coordinates:');
+      //     for (var i = 0; i < polyCoord.length-1; i++) {
+      //       console.log(polyCoord[i]);
+      //     }
+      //   }
+      // })
+    this.map.on('draw.create',()=>{
+      this.draws = this.draw.getAll();
+      // console.log(this.draws)
+      // console.log(this.draw.getAll())
+    })
+
+  }
+
+  featureSelection(){
+    this.map.on('draw.selectionchange',(f)=>{
+      if(f.features.length > 0){
+        const sheet = this.bottomSheet.addEmissions(f.features[0])
+      }
+      // const sheet = this.bottomSheet.addEmissions()
+      // sheet.
+      console.log(f)
+    })
   }
 
   themeChange(){

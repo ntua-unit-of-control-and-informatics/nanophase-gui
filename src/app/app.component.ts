@@ -37,7 +37,10 @@ export class AppComponent implements OnInit{
   }
 
   ngOnInit( ) {
-    this.selectedTheme = this._sessionService.get('theme')
+    let theme = this._sessionService.get('theme')
+    if(theme){
+      this.selectedTheme = theme
+    }
     this.isAuthorizedSubscription = this.oidcSecurityService.isAuthenticated$.subscribe(
       (isAuthorized: boolean) => {
         if(isAuthorized === true){
