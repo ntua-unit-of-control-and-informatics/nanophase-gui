@@ -1,12 +1,14 @@
 import { Geometry } from './geometry';
-import { Meta } from './meta';
+import { Properties } from './properties';
 
 export interface Emission{
-    meta?:Meta;
+    // meta?:Meta;
+    properties?:Properties
     nanomaterial?:string;
     compartmen?:string;
     form?:string;
     profile?:string;
     emission?:Number;
     geometry?:Geometry;
+
 }

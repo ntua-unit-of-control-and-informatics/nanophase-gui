@@ -89,9 +89,10 @@
   </div>
 
   <div class="action-buttons">
-    <button mat-flat-button color="primary" class="button" (click)="onSave()">Save</button>
-    <button mat-flat-button color="warn" class="button" (click)="onDelete()">Delete</button>
+    <button mat-flat-button color="accent" class="button" (click)="onSave()" matTooltip="Save emission">Save</button>
+    <button mat-flat-button color="warn" class="button" (click)="onDelete()" matTooltip="Delete emission">Delete</button>
     <button mat-flat-button class="button" (click)="onCancel()">Cancel</button>
+    <button mat-flat-button color="primary" class="button" (click)="onRemove()" matTooltip="Remove from map">Remove</button>
   </div>
 
 

@@ -168,6 +168,8 @@ export class BaseMapComponent implements OnInit {
             console.log("Save")
           }else if(res.save === "delete"){
             this.draw.delete(f.features[0].id)
+          }else if(res.save === "remove"){
+            this.draw.delete(f.features[0].id)
           }
           else{
             console.log("Update")

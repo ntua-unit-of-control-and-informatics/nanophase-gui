@@ -2,7 +2,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NgModule,APP_INITIALIZER } from '@angular/core';
 import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { MatToolbarModule, MatButtonModule, MatCardModule, MatButtonToggleGroup, MatButtonToggleModule, MatExpansionModule, MatFormFieldModule, MatInputModule, MatBottomSheetModule, MatSelectModule } from '@angular/material/';
+import { MatToolbarModule, MatButtonModule, MatCardModule, MatButtonToggleGroup, MatButtonToggleModule, MatExpansionModule, MatFormFieldModule, MatInputModule, MatBottomSheetModule, MatSelectModule, MatTooltipModule } from '@angular/material/';
 import { BaseMapComponent } from './base-map/base-map.component'
 import { Subscription } from 'rxjs';
 import { OverlayContainer } from '@angular/cdk/overlay';
@@ -25,7 +25,7 @@ import { FormsModule } from '@angular/forms';
     AddEmmisionsComponent
   ],
   imports: [
-    BrowserModule,FormsModule,HttpClientModule,MatExpansionModule,MatFormFieldModule,MatInputModule,MatBottomSheetModule,MatSelectModule,
+    BrowserModule,FormsModule,HttpClientModule,MatExpansionModule,MatTooltipModule,MatFormFieldModule,MatInputModule,MatBottomSheetModule,MatSelectModule,
     BrowserAnimationsModule,MatToolbarModule,MatInputModule,MatButtonModule,MatCardModule,MatButtonToggleModule,
     RouterModule.forRoot([
       { path: '', component: AppComponent },

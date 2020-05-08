@@ -31,7 +31,7 @@ export class AddEmmisionsComponent implements OnInit {
 
 
   onSave(){
-    this.feature.properties['nanomatreial'] = this.nanomaterial
+    this.feature.properties['nanomaterial'] = this.nanomaterial
     this.feature.properties['compartment'] = this.compartment
     this.feature.properties['form'] = this.form
     this.feature.properties['temporalProfile']= this.temporalProfile
@@ -44,7 +44,7 @@ export class AddEmmisionsComponent implements OnInit {
   }
 
   onCancel(){
-    this.feature.properties['nanomatreial'] = this.nanomaterial
+    this.feature.properties['nanomaterial'] = this.nanomaterial
     this.feature.properties['compartment'] = this.compartment
     this.feature.properties['form'] = this.form
     this.feature.properties['temporalProfile']= this.temporalProfile
@@ -57,7 +57,7 @@ export class AddEmmisionsComponent implements OnInit {
   }
 
   onDelete(){
-    this.feature.properties['nanomatreial'] = this.nanomaterial
+    this.feature.properties['nanomaterial'] = this.nanomaterial
     this.feature.properties['compartment'] = this.compartment
     this.feature.properties['form'] = this.form
     this.feature.properties['temporalProfile']= this.temporalProfile
@@ -65,6 +65,18 @@ export class AddEmmisionsComponent implements OnInit {
     this.feature.properties['description'] = this.description
     this.feature.properties['emission'] = Number(this.emission)
     this.feature['save'] = "delete"
+    this.thisSheetRef.dismiss(this.feature)
+  }
+
+  onRemove(){
+    this.feature.properties['nanomaterial'] = this.nanomaterial
+    this.feature.properties['compartment'] = this.compartment
+    this.feature.properties['form'] = this.form
+    this.feature.properties['temporalProfile']= this.temporalProfile
+    this.feature.properties['title'] = this.title
+    this.feature.properties['description'] = this.description
+    this.feature.properties['emission'] = Number(this.emission)
+    this.feature['save'] = "remove"
     this.thisSheetRef.dismiss(this.feature)
   }
 

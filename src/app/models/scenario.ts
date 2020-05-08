@@ -1,7 +1,7 @@
-import { Meta } from './meta';
 import { Emission } from './emission';
 
 export interface Scenario{
-    meta?:Meta
+    title?:string
+    description?:string
     emissions?:Array<Emission>
 }
