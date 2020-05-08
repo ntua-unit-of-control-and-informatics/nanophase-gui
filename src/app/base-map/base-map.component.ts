@@ -22,7 +22,7 @@ export class BaseMapComponent implements OnInit {
   isEnabled:boolean = false;
   subscription:Subscription;
 
-  draws:Object = {}
+  draws: any //mapboxgl..MapboxGeoJSONFeature
 
   bounds = new mapboxgl.LngLatBounds(
     new mapboxgl.LngLat(-1.390769, 51.291669),// Notio-Dutika coordinates
@@ -33,7 +33,6 @@ export class BaseMapComponent implements OnInit {
         displayControlsDefault: false,
         controls: {
             polygon: true,
-            trash: true,
             point:true,
         }
     });
@@ -159,10 +158,25 @@ export class BaseMapComponent implements OnInit {
     this.map.on('draw.selectionchange',(f)=>{
       if(f.features.length > 0){
         const sheet = this.bottomSheet.addEmissions(f.features[0])
+        sheet.subscribe(res =>{
+          if(typeof res === 'undefined'){
+          }
+          else if(res.save === false){
+            this.draw.delete(f.features[0].id)
+          }else if(res.save === true){
+            console.log(res)
+            console.log("Save")
+          }else if(res.save === "delete"){
+            this.draw.delete(f.features[0].id)
+          }
+          else{
+            console.log("Update")
+          }
+        })
       }
       // const sheet = this.bottomSheet.addEmissions()
       // sheet.
-      console.log(f)
+      // console.log(f)
     })
   }
 

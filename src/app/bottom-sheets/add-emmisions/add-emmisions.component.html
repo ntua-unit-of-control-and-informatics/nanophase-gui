@@ -6,13 +6,13 @@
 
     <mat-form-field class="emission-form-width">
       <mat-label>Title</mat-label>
-      <input matInput placeholder="Emission">
+      <input matInput placeholder="Emission" required [(ngModel)]="title">
       <mat-hint>Emissions title</mat-hint>
     </mat-form-field>
 
     <mat-form-field class="emission-form-width">
       <mat-label>Description</mat-label>
-      <input matInput placeholder="Emission">
+      <input matInput placeholder="Emission" required [(ngModel)]="description">
       <mat-hint>Emission description</mat-hint>
     </mat-form-field>
 
@@ -51,7 +51,7 @@
 
     <mat-form-field class="emission-form-width">
         <mat-label>Emission</mat-label>
-        <input matInput placeholder="Emission">
+        <input matInput placeholder="Emission" required [(ngModel)]="emission">
         <mat-hint>Kg per square meter per year</mat-hint>
       </mat-form-field>
 
@@ -62,13 +62,13 @@
 
     <mat-form-field class="emission-form-width">
       <mat-label>Title</mat-label>
-      <input matInput placeholder="Emission">
+      <input matInput placeholder="Emission" required [(ngModel)]="title">
       <mat-hint>Emissions title</mat-hint>
     </mat-form-field>
 
     <mat-form-field class="emission-form-width">
       <mat-label>Description</mat-label>
-      <input matInput placeholder="Emission">
+      <input matInput placeholder="Emission" required [(ngModel)]="description">
       <mat-hint>Emission description</mat-hint>
     </mat-form-field>
 
@@ -82,9 +82,18 @@
 
     <mat-form-field class="emission-form-width">
       <mat-label>Emission</mat-label>
-      <input matInput placeholder="Emission">
+      <input matInput placeholder="Emission" required [(ngModel)]="emission">
       <mat-hint>Kg per square meter per year</mat-hint>
     </mat-form-field>
 
   </div>
+
+  <div class="action-buttons">
+    <button mat-flat-button color="primary" class="button" (click)="onSave()">Save</button>
+    <button mat-flat-button color="warn" class="button" (click)="onDelete()">Delete</button>
+    <button mat-flat-button class="button" (click)="onCancel()">Cancel</button>
+  </div>
+
+
+
 </div>

@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { MatBottomSheetRef } from '@angular/material';
 
 @Component({
   selector: 'app-add-emmisions',
@@ -14,13 +15,57 @@ export class AddEmmisionsComponent implements OnInit {
   compartment:string = "Soil"
   form:string = "Pristine"
   temporalProfile:string = "P1"
+  title:string;
+  description:string;
+  save:boolean = false
 
-  constructor() { }
+  emission:string;
+
+  constructor(
+    private thisSheetRef: MatBottomSheetRef<AddEmmisionsComponent>
+  ) { }
 
   ngOnInit(): void {
-    console.log(this.feature)
+   
   }
 
 
+  onSave(){
+    this.feature.properties['nanomatreial'] = this.nanomaterial
+    this.feature.properties['compartment'] = this.compartment
+    this.feature.properties['form'] = this.form
+    this.feature.properties['temporalProfile']= this.temporalProfile
+    this.feature.properties['title'] = this.title
+    this.feature.properties['description'] = this.description
+    this.feature.properties['emission'] = Number(this.emission)
+    this.feature['save'] = true
+    this.thisSheetRef.dismiss(this.feature)
+    // this.thisSheetRef.
+  }
+
+  onCancel(){
+    this.feature.properties['nanomatreial'] = this.nanomaterial
+    this.feature.properties['compartment'] = this.compartment
+    this.feature.properties['form'] = this.form
+    this.feature.properties['temporalProfile']= this.temporalProfile
+    this.feature.properties['title'] = this.title
+    this.feature.properties['description'] = this.description
+    this.feature.properties['emission'] = Number(this.emission)
+    this.feature['save'] = false
+    this.thisSheetRef.dismiss(this.feature)
+    // return this.thisSheetRef.
+  }
+
+  onDelete(){
+    this.feature.properties['nanomatreial'] = this.nanomaterial
+    this.feature.properties['compartment'] = this.compartment
+    this.feature.properties['form'] = this.form
+    this.feature.properties['temporalProfile']= this.temporalProfile
+    this.feature.properties['title'] = this.title
+    this.feature.properties['description'] = this.description
+    this.feature.properties['emission'] = Number(this.emission)
+    this.feature['save'] = "delete"
+    this.thisSheetRef.dismiss(this.feature)
+  }
 
 }

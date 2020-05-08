@@ -15,6 +15,7 @@ import { RouterModule } from '@angular/router';
 import { SessionService } from './session/session.service';
 import { MainsComponent } from './mains/mains.component';
 import { AddEmmisionsComponent } from './bottom-sheets/add-emmisions/add-emmisions.component';
+import { FormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [
@@ -24,7 +25,7 @@ import { AddEmmisionsComponent } from './bottom-sheets/add-emmisions/add-emmisio
     AddEmmisionsComponent
   ],
   imports: [
-    BrowserModule,HttpClientModule,MatExpansionModule,MatFormFieldModule,MatInputModule,MatBottomSheetModule,MatSelectModule,
+    BrowserModule,FormsModule,HttpClientModule,MatExpansionModule,MatFormFieldModule,MatInputModule,MatBottomSheetModule,MatSelectModule,
     BrowserAnimationsModule,MatToolbarModule,MatInputModule,MatButtonModule,MatCardModule,MatButtonToggleModule,
     RouterModule.forRoot([
       { path: '', component: AppComponent },

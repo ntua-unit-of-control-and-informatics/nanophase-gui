@@ -15,7 +15,6 @@ export class SheetsService {
     let sheetRef:MatBottomSheetRef<AddEmmisionsComponent>
     sheetRef = this.sheet.open(AddEmmisionsComponent)
     sheetRef.instance.feature = f
-    // return sheetRef.afterDismissed();
     return sheetRef.afterDismissed();
   }
 
