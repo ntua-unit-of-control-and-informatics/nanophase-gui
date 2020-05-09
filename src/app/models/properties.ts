@@ -6,4 +6,5 @@ export interface Properties{
     compartment?:string;
     form?:string;
     temporalProfile?:string
+    saved?:boolean
 }

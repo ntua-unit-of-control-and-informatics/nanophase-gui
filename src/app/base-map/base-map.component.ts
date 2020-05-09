@@ -6,6 +6,8 @@ import { OidcSecurityService } from 'angular-auth-oidc-client';
 import { SessionService } from '../session/session.service';
 import { Subscription } from 'rxjs';
 import { SheetsService } from '../bottom-sheets/sheets-services.service';
+import { EmissionsApiService } from '../api-client/emissions-api.service';
+import { Emission } from '../models/emission';
 declare var require: any;
 var MapboxDraw = require('@mapbox/mapbox-gl-draw');
 var turf = require('@turf/turf');
@@ -39,7 +41,8 @@ export class BaseMapComponent implements OnInit {
 
     constructor(private _oidcService:OidcSecurityService
       , public sessionService:SessionService,
-      public bottomSheet:SheetsService){
+      public bottomSheet:SheetsService,
+      private _emissionsApi:EmissionsApiService){
 
     }
 
@@ -95,19 +98,35 @@ export class BaseMapComponent implements OnInit {
         if(theme.data === "default-theme"){
           let mapStyle = 'mapbox://styles/mapbox/light-v9'
           this.map.setStyle(mapStyle) 
-
         }
 
         if(theme.data === "dark-theme"){
           let mapStyle = 'mapbox://styles/mapbox/dark-v9'
           this.map.setStyle(mapStyle) 
-          
         }
 
       })
+      
       this.featureSelection()
-
+      this.onUpdate()
     }   
+
+  public onStyleLoad(){
+    this.map.on('style.load', () => {
+      const waiting = () => {
+        if (this.map.isStyleLoaded()) {
+          setTimeout(waiting, 200);
+        } else {
+          this.loadLayer();
+        }
+      };
+      waiting();
+    });
+  }
+
+ public loadLayer(){
+  this.map.addSource('scenario', { type: 'geojson', data: this.draws })
+ }
 
   createAndUpdatePolugon() {
     //  var data,polyCoord; 
@@ -148,10 +167,21 @@ export class BaseMapComponent implements OnInit {
       // })
     this.map.on('draw.create',()=>{
       this.draws = this.draw.getAll();
-      // console.log(this.draws)
-      // console.log(this.draw.getAll())
     })
 
+  }
+
+  onUpdate(){
+    this.map.on('draw.update',(f)=>{ 
+      console.log(f)
+      let emi = f.features[0]
+      this._emissionsApi.putEntitySecured(emi).subscribe((em:Emission)=>{
+        let item = this.draws.features.find(this.findIndexToUpdate, em.id)
+        let index = this.draws.features.indexOf(item);
+        this.draws.features[index] = em
+        this.draw.add(em)
+      })
+    })
   }
 
   featureSelection(){
@@ -159,20 +189,57 @@ export class BaseMapComponent implements OnInit {
       if(f.features.length > 0){
         const sheet = this.bottomSheet.addEmissions(f.features[0])
         sheet.subscribe(res =>{
-          if(typeof res === 'undefined'){
+          if(typeof res === 'undefined' && typeof f.features[0].properties != 'undefined'){
+            if(f.features[0].properties['saved'] != true){
+              this.draw.delete(f.features[0].id)
+            }
           }
-          else if(res.save === false){
+          else if(typeof res != 'undefined' && res.save === false && f.features[0].properties['saved'] != true){
             this.draw.delete(f.features[0].id)
           }else if(res.save === true){
             console.log(res)
-            console.log("Save")
-          }else if(res.save === "delete"){
-            this.draw.delete(f.features[0].id)
-          }else if(res.save === "remove"){
+            if(res.properties.saved != true){
+              let emis:Emission = {}
+              emis.properties = res.properties
+              emis.geometry = res.geometry
+              emis.id = res.id
+              emis.properties.date = Date.now();
+              emis.type = res.type
+              this._emissionsApi.post(emis).subscribe((em:Emission)=>{
+                let item = this.draws.features.find(this.findIndexToUpdate, em.id)
+                let index = this.draws.features.indexOf(item);
+                this.draws.features[index] = em
+                this.draw.add(em)
+              })
+            }else if(typeof res != 'undefined' && res.properties.saved === true){
+              this._emissionsApi.putEntitySecured(res).subscribe((em:Emission)=>{
+                let item = this.draws.features.find(this.findIndexToUpdate, em.id)
+                let index = this.draws.features.indexOf(item);
+                this.draws.features[index] = em
+                this.draw.add(em)
+              })
+            }
+          }else if(typeof res != 'undefined' &&  res.save === "delete"){
+            this._emissionsApi.deleteWithIdSecured(f.features[0].id).subscribe(r=>{
+              if(r){
+                this.draw.delete(f.features[0].id)
+              }
+            })
+          }else if( typeof res != 'undefined' && res.save === "remove"){
             this.draw.delete(f.features[0].id)
           }
           else{
-            console.log("Update")
+            let emis:Emission = {}
+            emis.properties = res.properties
+            emis.geometry = res.geometry
+            emis.id = res.id
+            emis.properties.date = Date.now();
+            this._emissionsApi.putEntitySecured(emis).subscribe((em:Emission) =>{
+              let item = this.draws.features.find(this.findIndexToUpdate, em.id)
+              let index = this.draws.features.indexOf(item);
+              this.draws.features[index] = em
+              this.draw.add(em)
+            })
           }
         })
       }
@@ -180,6 +247,10 @@ export class BaseMapComponent implements OnInit {
       // sheet.
       // console.log(f)
     })
+  }
+
+  findIndexToUpdate(item) { 
+    return item.id === this;
   }
 
   themeChange(){
