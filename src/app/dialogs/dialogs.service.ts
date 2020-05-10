@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { MatDialog, MatDialogRef } from '@angular/material';
 import { HttpErrorResponse } from '@angular/common/http';
 import { ErrorDialogComponent } from './error-dialog/error-dialog.component';
+import { SaveScenarioComponent } from './save-scenario/save-scenario.component';
 
 @Injectable({
   providedIn: 'root'
@@ -29,6 +30,12 @@ export class DialogsService {
     dialogRef = this.dialog.open(ErrorDialogComponent);
     dialogRef.componentInstance.httpStatus = Number(status);
     dialogRef.componentInstance.message = errorMessage;
+    return dialogRef.afterClosed();
+  }
+
+  public onSaveScenario(){
+    let dialogRef: MatDialogRef<SaveScenarioComponent>;
+    dialogRef = this.dialog.open(SaveScenarioComponent);
     return dialogRef.afterClosed();
   }
 

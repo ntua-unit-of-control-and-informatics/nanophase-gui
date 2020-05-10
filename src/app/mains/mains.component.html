@@ -5,32 +5,23 @@
           Emissions
         </mat-panel-title>
         <mat-panel-description>
-          Type your name and age
+          emissions list
         </mat-panel-description>
       </mat-expansion-panel-header>
   
-      <!-- <mat-form-field>
-        <mat-label>First name</mat-label>
-        <input matInput>
-      </mat-form-field> -->
-<!--   
-      <mat-form-field>
-        <mat-label>Age</mat-label>
-        <input matInput type="number" min="1">
-      </mat-form-field> -->
+      <app-emission></app-emission>
 
     </mat-expansion-panel>
-    <mat-expansion-panel (opened)="panelOpenState = true"
-                         (closed)="panelOpenState = false">
+    <mat-expansion-panel>
       <mat-expansion-panel-header>
         <mat-panel-title>
           Scenarios
         </mat-panel-title>
         <mat-panel-description>
-          Currently I am {{panelOpenState ? 'open' : 'closed'}}
+         scenarios list
         </mat-panel-description>
       </mat-expansion-panel-header>
-      <p>I'm visible because I am open</p>
+        <app-scenario-list></app-scenario-list>
     </mat-expansion-panel>
 
     <!-- <mat-expansion-panel>

@@ -8,6 +8,9 @@ import { Subscription } from 'rxjs';
 import { SheetsService } from '../bottom-sheets/sheets-services.service';
 import { EmissionsApiService } from '../api-client/emissions-api.service';
 import { Emission } from '../models/emission';
+import { DialogsService } from '../dialogs/dialogs.service';
+import { Scenario } from '../models/scenario';
+import { ScenarioApiService } from '../api-client/scenario-api.service';
 declare var require: any;
 var MapboxDraw = require('@mapbox/mapbox-gl-draw');
 var turf = require('@turf/turf');
@@ -23,6 +26,12 @@ export class BaseMapComponent implements OnInit {
 
   isEnabled:boolean = false;
   subscription:Subscription;
+
+  fromList:Subscription
+
+  fromScenarioList:Subscription
+
+  saveScenario:boolean = false
 
   draws: any //mapboxgl..MapboxGeoJSONFeature
 
@@ -42,7 +51,9 @@ export class BaseMapComponent implements OnInit {
     constructor(private _oidcService:OidcSecurityService
       , public sessionService:SessionService,
       public bottomSheet:SheetsService,
-      private _emissionsApi:EmissionsApiService){
+      private _emissionsApi:EmissionsApiService,
+      private _dialogsService:DialogsService,
+      private _scenarioApi:ScenarioApiService){
 
     }
 
@@ -60,7 +71,6 @@ export class BaseMapComponent implements OnInit {
           });
           this._oidcService.isAuthenticated$.subscribe(
             (isAuthorized: boolean) => {
-              console.log(isAuthorized)
               if(isAuthorized === true && this.isEnabled === false){
                 this.map.addControl(this.draw,'top-right');
                 this.map.addControl(new mapboxgl.NavigationControl());
@@ -82,7 +92,6 @@ export class BaseMapComponent implements OnInit {
           });
           this._oidcService.isAuthenticated$.subscribe(
             (isAuthorized: boolean) => {
-              console.log(isAuthorized)
               if(isAuthorized === true && this.isEnabled === false){
                 this.map.addControl(this.draw,'top-right');
                 this.map.addControl(new mapboxgl.NavigationControl());
@@ -105,6 +114,47 @@ export class BaseMapComponent implements OnInit {
           this.map.setStyle(mapStyle) 
         }
 
+      })
+
+      this.fromList = this.sessionService
+      .getEmissionForMap().subscribe((em:Emission) => {
+        if(em){
+          this.draw.add(em)
+          this.checkSaveScenario()
+          if(em.geometry.type === "Polygon"){
+            this.map.flyTo(
+              {center:
+                [
+                  em.geometry.coordinates[0][1][0],
+                  em.geometry.coordinates[0][1][1]
+                ]
+                , essential: true})
+          }else{
+            this.map.flyTo(
+              {
+                center: [
+                  em.geometry.coordinates[0],
+                  em.geometry.coordinates[1]
+                ],
+                essential: true
+              }
+            )
+          }
+        }
+      })
+
+      this.fromScenarioList = this.sessionService
+      .getScenarioForMap().subscribe((scen:Scenario) => {
+        console.log(scen)
+        this.draw.deleteAll()
+        if(scen){
+          scen.emissions.forEach((emId:string)=>{
+            this._emissionsApi.getWithIdSecured(emId).subscribe((em:Emission)=>{
+              this.draw.add(em)
+              this.checkSaveScenario()
+            })
+          })
+        }
       })
       
       this.featureSelection()
@@ -129,42 +179,6 @@ export class BaseMapComponent implements OnInit {
  }
 
   createAndUpdatePolugon() {
-    //  var data,polyCoord; 
-     
-      // this.map.on('draw.create',()=>{
-      //   data = this.draw.getAll();
-      //   console.log(data)
-      //   polyCoord = turf.coordAll(data);
-
-      //   if (data.features.length > 0) {
-      //        //draw_point 
-      //       if(this.draw.getMode()=='draw_point'){ 
-      //         console.log('Points Created! With coordinates:');
-      //         for (var i = 1; i <= polyCoord.length; i++) {
-      //         console.log(polyCoord[i-1]);
-      //         }
-      //       }
-      //     else { //draw_polygon
-      //       console.log('Polygon Created! With coordinates:');
-      //       for (var i = 0; i < polyCoord.length-1; i++) {
-      //       console.log(polyCoord[i]);
-      //       }
-      //     }
-      //   }
-      // })
-      // this.map.on('draw.delete',()=>{
-      //   console.log('Deleted!');
-      // })
-      // this.map.on('draw.update',()=>{
-      //   data = this.draw.getAll();
-      //   polyCoord = turf.coordAll(data);
-      //   if (data.features.length > 0) {
-      //     console.log(' Updated! With coordinates:');
-      //     for (var i = 0; i < polyCoord.length-1; i++) {
-      //       console.log(polyCoord[i]);
-      //     }
-      //   }
-      // })
     this.map.on('draw.create',()=>{
       this.draws = this.draw.getAll();
     })
@@ -180,6 +194,7 @@ export class BaseMapComponent implements OnInit {
         let index = this.draws.features.indexOf(item);
         this.draws.features[index] = em
         this.draw.add(em)
+        this.checkSaveScenario()
       })
     })
   }
@@ -192,12 +207,14 @@ export class BaseMapComponent implements OnInit {
           if(typeof res === 'undefined' && typeof f.features[0].properties != 'undefined'){
             if(f.features[0].properties['saved'] != true){
               this.draw.delete(f.features[0].id)
+              this.checkSaveScenario()
             }
           }
           else if(typeof res != 'undefined' && res.save === false && f.features[0].properties['saved'] != true){
             this.draw.delete(f.features[0].id)
-          }else if(res.save === true){
-            console.log(res)
+            this.checkSaveScenario()
+          }else if(typeof res != 'undefined' && res.save === true){
+
             if(res.properties.saved != true){
               let emis:Emission = {}
               emis.properties = res.properties
@@ -210,6 +227,8 @@ export class BaseMapComponent implements OnInit {
                 let index = this.draws.features.indexOf(item);
                 this.draws.features[index] = em
                 this.draw.add(em)
+                this.sessionService.setEmissionForList(em)
+                this.checkSaveScenario()
               })
             }else if(typeof res != 'undefined' && res.properties.saved === true){
               this._emissionsApi.putEntitySecured(res).subscribe((em:Emission)=>{
@@ -217,18 +236,21 @@ export class BaseMapComponent implements OnInit {
                 let index = this.draws.features.indexOf(item);
                 this.draws.features[index] = em
                 this.draw.add(em)
+                this.checkSaveScenario()
               })
             }
           }else if(typeof res != 'undefined' &&  res.save === "delete"){
             this._emissionsApi.deleteWithIdSecured(f.features[0].id).subscribe(r=>{
               if(r){
                 this.draw.delete(f.features[0].id)
+                this.checkSaveScenario()
               }
             })
           }else if( typeof res != 'undefined' && res.save === "remove"){
             this.draw.delete(f.features[0].id)
+            this.checkSaveScenario()
           }
-          else{
+          else if(typeof res != 'undefined' && res.save != false && res.properties.saved === true){
             let emis:Emission = {}
             emis.properties = res.properties
             emis.geometry = res.geometry
@@ -239,22 +261,47 @@ export class BaseMapComponent implements OnInit {
               let index = this.draws.features.indexOf(item);
               this.draws.features[index] = em
               this.draw.add(em)
+              this.checkSaveScenario()
             })
           }
         })
       }
-      // const sheet = this.bottomSheet.addEmissions()
-      // sheet.
-      // console.log(f)
     })
   }
+
+
+  checkSaveScenario(){
+    let data = this.draw.getAll()
+    if(data.features.length > 0){
+      this.saveScenario = true
+    }else if(data.features.length === 0){
+      this.saveScenario = false
+    }
+  }
+
+  onSaveScenario(){
+    this._dialogsService.onSaveScenario().subscribe(res=>{
+      let data = this.draw.getAll()
+      let scenario:Scenario = {}
+      scenario.emissions = []
+      data.features.forEach(element => {
+        scenario.emissions.push(element.id)
+      });
+      scenario.date = Date.now()
+      scenario.title = res['title']
+      scenario.description = res['description']
+
+      this._scenarioApi.post(scenario).subscribe((res:Scenario) =>{
+        this.sessionService.setScenarioForList(res)
+      })
+      this.saveScenario = false;
+    })
+  }
+
 
   findIndexToUpdate(item) { 
     return item.id === this;
   }
 
-  themeChange(){
-
-  }
 
 }

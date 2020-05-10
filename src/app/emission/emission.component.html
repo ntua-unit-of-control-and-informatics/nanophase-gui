@@ -1,0 +1,9 @@
+<mat-list *ngIf="emissionsShown" class="emisson_list">
+    <div *ngFor="let ems of emissionsShown;">
+        <mat-list-item  class="list_item" (click)="onRowClicked(ems)">
+            <mat-icon mat-list-icon>blur_circular</mat-icon>
+            <div mat-line matTooltip="{{ems.properties?.description}}">{{ems.properties?.title}}</div>
+            <div *ngIf="ems.properties?.date" mat-line> {{ems.properties?.date | date}} </div>
+          </mat-list-item>
+    </div>
+</mat-list>

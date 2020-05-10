@@ -1,6 +1,8 @@
 import {Injectable} from '@angular/core';
 import {Observable, Subject,  BehaviorSubject } from 'rxjs';
 import {HttpClientModule, HttpClient} from '@angular/common/http';
+import { Emission } from '../models/emission';
+import { Scenario } from '../models/scenario';
 
 
 @Injectable()
@@ -11,7 +13,11 @@ export class SessionService{
     userid:string;
     private userName = new Subject<any>();
     private theme = new Subject<any>();
+    private emissionForList = new Subject<Emission>();
+    private emmissionForMap = new Subject<Emission>();
 
+    private scenarioForList = new Subject<Scenario>();
+    private scenarioForMap = new Subject<Scenario>();
 
     constructor(){
 
@@ -39,6 +45,41 @@ export class SessionService{
     getTheme(): Observable<any>{
         return this.theme.asObservable();
     }
+
+    setEmissionForMap(emm:Emission){
+        this.emmissionForMap.next(emm)
+    }
+
+    getEmissionForMap(){
+        return this.emmissionForMap.asObservable()
+    }
+
+    setEmissionForList(emm:Emission){
+        this.emissionForList.next(emm)
+    }
+
+    getEmissionForList(){
+        return this.emissionForList.asObservable()
+    }
+
+
+
+    setScenarioForMap(emm:Scenario){
+        this.scenarioForMap.next(emm)
+    }
+
+    getScenarioForMap(){
+        return this.scenarioForMap.asObservable()
+    }
+
+    setScenarioForList(scen:Scenario){
+        this.scenarioForList.next(scen)
+    }
+
+    getScenarioForList(){
+        return this.scenarioForList.asObservable()
+    }
+
 
     get(key: any){
         return localStorage.getItem(key);

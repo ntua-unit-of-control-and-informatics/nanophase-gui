@@ -38,11 +38,11 @@ export class BaseClientService < T >{
   }
 
     public getWithIdSecured<T>(id:string): Observable<T>{
-        let params = new HttpParams();
+        let params = new HttpParams().set('id', id);
         const token = this.oidcSecurityService.getToken();
         const tokenValue = 'Bearer ' + token;
-        let headers = new HttpHeaders({'Content-Type':'application/json'}).set('Authorization', tokenValue);
-        let pathFormed = this._path + id
+        let headers = new HttpHeaders({'accept':'application/json'}).set('Authorization', tokenValue);
+        let pathFormed = this._path
         return this.http.get(pathFormed, { headers: headers, params: params } ).pipe(
             tap((res : Response) => { 
                 return res           
