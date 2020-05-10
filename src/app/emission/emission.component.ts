@@ -17,6 +17,8 @@ export class EmissionComponent implements OnInit {
   fromMap:Subscription
   // toMap:Subscription
 
+  total:Number
+
   constructor(
     private _emmissionApi:EmissionsApiService,
     private _sessionService:SessionService
@@ -36,6 +38,9 @@ export class EmissionComponent implements OnInit {
         let emiss:Emission = JSON.parse(e)
         this.emissionsShown.push(emiss)
       })
+    })
+    this._emmissionApi.count().subscribe(t=>{
+      this.total = Number(t.headers.get('total'))
     })
   }
 

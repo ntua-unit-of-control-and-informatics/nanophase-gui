@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { HttpParams, HttpHeaders, HttpClient } from '@angular/common/http';
+import { HttpParams, HttpHeaders, HttpClient, HttpResponse } from '@angular/common/http';
 import { tap, catchError } from 'rxjs/operators';
 import { DialogsService } from '../dialogs/dialogs.service';
 import { OidcSecurityService } from 'angular-auth-oidc-client';
@@ -129,6 +129,22 @@ export class BaseClientService < T >{
               return res           
           }),catchError( err => this.dialogsService.onError(err) )
       );
+  }
+
+  public count(): Observable<HttpResponse<any>>{
+    const token = this.oidcSecurityService.getToken();
+    const tokenValue = token;
+    let headers = new HttpHeaders({'accept':'application/json'}).set('Authorization',"Bearer " + tokenValue);
+    let pathFormed = this._path 
+    let params = new HttpParams();
+    params = params.append('skip', "0");
+    params = params.append('maximum', "1"); 
+    let options = { headers: headers, params: params ,observe:'response'};
+    return this.http.get(pathFormed,{ headers: headers, params: params ,observe:'response'} ).pipe(
+        tap((res : HttpResponse<any>) => {  
+          return res.headers.get('total')     
+        }),catchError( err => this.dialogsService.onError(err) )
+    );
   }
 
 }
