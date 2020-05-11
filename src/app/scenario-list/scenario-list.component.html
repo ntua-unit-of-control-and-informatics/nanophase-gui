@@ -1,4 +1,4 @@
-<mat-list *ngIf="scenariosShown" class="emisson_list">
+<mat-list *ngIf="scenariosShown" class="emisson_list" [style.overflow]="'auto'" [style.height.px]="'200'">
     <div *ngFor="let sce of scenariosShown;">
         <mat-list-item  class="list_item">
             <mat-icon mat-list-icon>blur_linear</mat-icon>
