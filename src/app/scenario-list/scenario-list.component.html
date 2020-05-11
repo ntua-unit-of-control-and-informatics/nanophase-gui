@@ -1,0 +1,22 @@
+<mat-list *ngIf="scenariosShown" class="emisson_list">
+    <div *ngFor="let sce of scenariosShown;">
+        <mat-list-item  class="list_item">
+            <mat-icon mat-list-icon>blur_linear</mat-icon>
+            <div mat-line matTooltip="{{sce.description}}">{{sce.title}}</div>
+            <div *ngIf="sce.date" mat-line> {{sce.date | date}} </div>
+            <button mat-mini-fab color="warn" matTooltip="Delete scenario" class="deleteb" (click)="deleteScenario(sce)">
+                <mat-icon>delete</mat-icon>
+              </button>
+            <button mat-mini-fab color="accent" matTooltip="View scenario" (click)="viewScenario(sce)">
+                <mat-icon>forward</mat-icon>
+            </button>
+          </mat-list-item>
+    </div>
+</mat-list>
+<mat-paginator #paginator 
+[length]="total"
+[pageSize]="pageSize"
+[pageSizeOptions]="pageSizeOptions"
+(page)="pageEvent($event)" 
+>
+</mat-paginator>

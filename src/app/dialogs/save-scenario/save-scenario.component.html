@@ -1,0 +1,17 @@
+<div class="dialog">
+    <div mat-subheader>Scenario title and description</div>
+    <form class="input-form">
+        <mat-form-field class="input">
+          <mat-label>Scenario's title</mat-label>
+          <input matInput placeholder="title" required [(ngModel)]="title" [ngModelOptions]="{standalone: true}">
+        </mat-form-field>
+      
+        <mat-form-field class="input">
+            <mat-label>Scenario's description</mat-label>
+            <input matInput placeholder="description" required [(ngModel)]="description" [ngModelOptions]="{standalone: true}">
+          </mat-form-field>
+      </form>
+
+      <button mat-raised-button color="primary" (click)="onSave()" class="okb">Ok</button>
+</div>
+

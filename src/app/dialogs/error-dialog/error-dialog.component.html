@@ -1,0 +1,7 @@
+<div class="error_dialog">
+    <h3>Oups!! </h3>
+    <h4>Something gone wrong and it has the number: {{httpStatus}}</h4>
+    <p>What gone wrong is that -> {{message}}</p>
+    <!-- <p class="details" *ngIf="_env;" >And the details is that {{details}}</p> -->
+    <button mat-button (click)="dialogRef.close()">OK</button>
+</div>

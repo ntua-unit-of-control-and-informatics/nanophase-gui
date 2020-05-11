@@ -1,0 +1,11 @@
+<div id="map-mapbox"></div>
+<div id="calculated-area"></div>
+
+
+<button 
+    *ngIf="saveScenario"
+    mat-raised-button color="primary" 
+    class="save-scenario" 
+    matTooltip="Save emissions shown on map as a scenario"
+    (click)="onSaveScenario()">Save</button>
+<!-- <button mat-mini-fab class="b_test">Basic</button> -->

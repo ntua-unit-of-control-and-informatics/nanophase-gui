@@ -1,0 +1,15 @@
+{
+    "nanoFaseApi": "http://localhost:5000/",
+    "__stsServer": "https://login.jaqpot.org/auth/realms/jaqpot",
+    "stsServer": "https://login.cloud.nanosolveit.eu/auth/realms/nanosolveit",
+    "redirect_url" : "http://localhost:4200/",
+    "__redirect_url" : "https://deepdaph.cloud.nanosolveit.eu/dashboard",
+    "client_id":"nanofase-app",
+    "response_type" : "code",
+    "scope": "openid email profile",
+    "silent_redirect_url" : "http://localhost:4200/assets/silent-renew.html",
+    "__comment": "docker run -p 80:80 --name daphapp -v=/Users/pantelispanka/Jaqpot/deepdaph/deepdaph/conf.json:/usr/share/nginx/html/assets/conf.json deepdaph",
+    "baseurl": "http://localhost:4200/",
+    "__baseurl":"https://nanofase.nanosolveit.eu",
+    "logLevel":"debug"
+}
