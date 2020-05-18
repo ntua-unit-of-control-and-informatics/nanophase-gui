@@ -3,6 +3,7 @@ import {Observable, Subject,  BehaviorSubject } from 'rxjs';
 import {HttpClientModule, HttpClient} from '@angular/common/http';
 import { Emission } from '../models/emission';
 import { Scenario } from '../models/scenario';
+import { EmissionsApiService } from '../api-client/emissions-api.service';
 
 
 @Injectable()
@@ -18,6 +19,13 @@ export class SessionService{
 
     private scenarioForList = new Subject<Scenario>();
     private scenarioForMap = new Subject<Scenario>();
+
+    private scenariosEmissions = new Subject<Emission>();
+    private showScenariosEmissions = new Subject<string>();
+
+    private flyToShownEmissions = new Subject<Emission>();
+
+    private removeFromShownEmissions = new Subject<Emission>();
 
     constructor(){
 
@@ -80,6 +88,38 @@ export class SessionService{
         return this.scenarioForList.asObservable()
     }
 
+
+    setScenariosEmissions(emm:Emission){
+        this.scenariosEmissions.next(emm)
+    }
+
+    getScenariosEmissions(){
+        return this.scenariosEmissions.asObservable()
+    }
+
+    setShowScenariosEmissions(emm:string){
+        this.showScenariosEmissions.next(emm)
+    }
+
+    getShowScenariosEmissions(){
+        return this.showScenariosEmissions.asObservable()
+    }
+
+    setFlyToShownEmissions(emm:Emission){
+        this.flyToShownEmissions.next(emm)
+    }
+
+    getFlyToShownEmissions(){
+        return this.flyToShownEmissions.asObservable()
+    }
+
+    setRemoveFromShownEmissions(em:Emission){
+        this.removeFromShownEmissions.next(em)
+    }
+
+    getRemoveFromShownEmissions(){
+        return this.removeFromShownEmissions.asObservable()
+    }
 
     get(key: any){
         return localStorage.getItem(key);

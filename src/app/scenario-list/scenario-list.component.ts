@@ -56,4 +56,5 @@ export class ScenarioListComponent implements OnInit {
     this._sessionService.setScenarioForMap(sce)
   }
 
+
 }

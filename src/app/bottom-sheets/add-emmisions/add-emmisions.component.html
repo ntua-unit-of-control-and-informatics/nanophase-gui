@@ -79,6 +79,24 @@
       </mat-select>
     </mat-form-field>
 
+    <mat-form-field class="emission-form-width">
+      <mat-label>Compartment</mat-label>
+      <mat-select [(value)]="feature.properties.compartment" class="emission-form-width">
+        <mat-option value="Surface water">Surface water</mat-option>
+        <mat-option value="Soil">Soil</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field class="emission-form-width">
+      <mat-label>Form</mat-label>
+      <mat-select [(value)]="feature.properties.form" class="emission-form-width">
+        <mat-option value="Pristine">Pristine</mat-option>
+        <mat-option value="Matrix embedded">Matrix embedded</mat-option>
+        <mat-option value="Transformed">Transformed</mat-option>
+        <mat-option value="Dissolved">Dissolved</mat-option>
+      </mat-select>
+    </mat-form-field>
+
 
     <mat-form-field class="emission-form-width">
       <mat-label>Emission</mat-label>

@@ -10,12 +10,17 @@
 
   <app-mains></app-mains>
 
+  <app-scenarios-emissions></app-scenarios-emissions>
+
   <mat-button-toggle-group #group="matButtonToggleGroup" (change)="themeChanged($event)" [(value)] = "selectedTheme" class="theme-t">
     <mat-button-toggle value="dark-theme" aria-label="Text align left" >
       Dark
     </mat-button-toggle>
     <mat-button-toggle value="default-theme" aria-label="Text align center">
       Light
+    </mat-button-toggle>
+    <mat-button-toggle value="green-theme" aria-label="Text align center">
+      Green
     </mat-button-toggle>
   </mat-button-toggle-group>
 

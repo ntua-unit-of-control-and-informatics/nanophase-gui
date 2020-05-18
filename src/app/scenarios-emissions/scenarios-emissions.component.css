@@ -1,0 +1,17 @@
+.emissions-card{
+    position: absolute;
+    bottom: 10px;
+    width: 310px;
+    left: 10px;
+    opacity: 0.8;
+}
+
+
+.card-content{
+    height:160px;
+    overflow: auto;
+}
+
+.list_item:hover{
+    background-color: lightgray;
+}

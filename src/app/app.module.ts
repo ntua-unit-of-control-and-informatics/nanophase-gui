@@ -20,6 +20,7 @@ import { DialogsService } from './dialogs/dialogs.service';
 import { EmissionComponent } from './emission/emission.component';
 import { SaveScenarioComponent } from './dialogs/save-scenario/save-scenario.component';
 import { ScenarioListComponent } from './scenario-list/scenario-list.component';
+import { ScenariosEmissionsComponent } from './scenarios-emissions/scenarios-emissions.component';
 
 @NgModule({
   declarations: [
@@ -29,7 +30,8 @@ import { ScenarioListComponent } from './scenario-list/scenario-list.component';
     AddEmmisionsComponent,
     EmissionComponent,
     SaveScenarioComponent,
-    ScenarioListComponent
+    ScenarioListComponent,
+    ScenariosEmissionsComponent
   ],
   imports: [
     BrowserModule,FormsModule,MatDialogModule, MatListModule,MatIconModule, HttpClientModule,MatExpansionModule,MatTooltipModule,MatFormFieldModule,MatInputModule,MatBottomSheetModule,MatSelectModule,
@@ -88,8 +90,13 @@ export class AppModule {
         // this.overlayContainer.getContainerElement().classList.remove("cdk-overlay-container");
         this.overlayContainer.getContainerElement().classList.remove('default-theme'); 
         this.overlayContainer.getContainerElement().classList.add('dark-theme');
-      }else{
+      }else if (the[0]==='default-theme'){
         this.theme = 'default-theme'
+        // this.overlayContainer.getContainerElement().classList.remove("cdk-overlay-container");
+        this.overlayContainer.getContainerElement().classList.remove('dark-theme');
+        this.overlayContainer.getContainerElement().classList.add('default-theme');
+      }else if(the[0] === 'green-theme'){
+        this.theme = 'green-theme'
         // this.overlayContainer.getContainerElement().classList.remove("cdk-overlay-container");
         this.overlayContainer.getContainerElement().classList.remove('dark-theme');
         this.overlayContainer.getContainerElement().classList.add('default-theme');
