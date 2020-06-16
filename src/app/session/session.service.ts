@@ -27,7 +27,9 @@ export class SessionService{
 
     private removeFromShownEmissions = new Subject<Emission>();
 
-    constructor(){
+    constructor(
+        private _emissionsApi:EmissionsApiService
+    ){
 
     }
 
@@ -73,7 +75,17 @@ export class SessionService{
 
 
     setScenarioForMap(emm:Scenario){
+        this.scenarioForMap.next(null)
+        // this.emmissionForMap.next(null)
+        this.scenariosEmissions.next(null)
         this.scenarioForMap.next(emm)
+        emm.emissions.forEach(em=>{
+            this._emissionsApi.getWithIdSecured(em).subscribe(em=>{
+                if(em){
+                    this.scenariosEmissions.next(em)
+                }
+            })
+        })
     }
 
     getScenarioForMap(){
