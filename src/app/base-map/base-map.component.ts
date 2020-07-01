@@ -11,6 +11,9 @@ import { Emission } from '../models/emission';
 import { DialogsService } from '../dialogs/dialogs.service';
 import { Scenario } from '../models/scenario';
 import { ScenarioApiService } from '../api-client/scenario-api.service';
+import { Simulation } from '../models/simulation';
+import { SimulationApiService } from '../api-client/simulation-api.service';
+import { DatePipe } from '@angular/common';
 declare var require: any;
 var MapboxDraw = require('@mapbox/mapbox-gl-draw');
 var turf = require('@turf/turf');
@@ -57,7 +60,7 @@ export class BaseMapComponent implements OnInit {
       public bottomSheet:SheetsService,
       private _emissionsApi:EmissionsApiService,
       private _dialogsService:DialogsService,
-      private _scenarioApi:ScenarioApiService){
+      private _scenarioApi:ScenarioApiService, private _simulationApi:SimulationApiService, public datepipe: DatePipe){
 
     }
 
@@ -247,7 +250,6 @@ export class BaseMapComponent implements OnInit {
 
   onUpdate(){
     this.map.on('draw.update',(f)=>{ 
-      console.log(f)
       let emi = f.features[0]
       this._emissionsApi.putEntitySecured(emi).subscribe((em:Emission)=>{
         let item = this.draws.features.find(this.findIndexToUpdate, em.id)
@@ -382,6 +384,28 @@ export class BaseMapComponent implements OnInit {
     })
   }
 
+
+  onRunScenario(){
+    this._dialogsService.onRunSimulation().subscribe(res=>{
+      if(res){
+        let data = this.draw.getAll()
+        let simulation:Simulation = {}
+        simulation.emissions = []
+        data.features.forEach(element => {
+          simulation.emissions.push(element.id)
+        });
+        simulation.date = Date.now()
+        simulation.title = res['title']
+        simulation.description = res['description']
+        simulation.startDate =  this.datepipe.transform(res['startDate'], 'yyyy-MM-dd')
+        
+        this._simulationApi.post(simulation).subscribe((res:Simulation) =>{
+          console.log(res)
+        })
+        // this.scenarioOnScreen = false;        
+      }
+    })
+  }
 
   findIndexToUpdate(item) { 
     return item.id === this;

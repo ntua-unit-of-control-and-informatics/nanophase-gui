@@ -4,6 +4,7 @@ import { MatDialog, MatDialogRef } from '@angular/material';
 import { HttpErrorResponse } from '@angular/common/http';
 import { ErrorDialogComponent } from './error-dialog/error-dialog.component';
 import { SaveScenarioComponent } from './save-scenario/save-scenario.component';
+import { RunSimulationComponent } from './run-simulation/run-simulation.component';
 
 @Injectable({
   providedIn: 'root'
@@ -36,6 +37,12 @@ export class DialogsService {
   public onSaveScenario(){
     let dialogRef: MatDialogRef<SaveScenarioComponent>;
     dialogRef = this.dialog.open(SaveScenarioComponent);
+    return dialogRef.afterClosed();
+  }
+
+  public onRunSimulation(){
+    let dialogRef: MatDialogRef<RunSimulationComponent>;
+    dialogRef = this.dialog.open(RunSimulationComponent);
     return dialogRef.afterClosed();
   }
 

@@ -2,7 +2,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NgModule,APP_INITIALIZER } from '@angular/core';
 import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { MatToolbarModule, MatButtonModule, MatCardModule, MatButtonToggleGroup, MatButtonToggleModule, MatExpansionModule, MatFormFieldModule, MatInputModule, MatBottomSheetModule, MatSelectModule, MatTooltipModule, MatDialogModule, MatListModule, MatIconModule } from '@angular/material/';
+import { MatToolbarModule, MatButtonModule, MatCardModule, MatButtonToggleGroup, MatButtonToggleModule, MatExpansionModule, MatFormFieldModule, MatInputModule, MatBottomSheetModule, MatSelectModule, MatTooltipModule, MatDialogModule, MatListModule, MatIconModule, MatDatepickerModule, MatNativeDateModule } from '@angular/material/';
 import { BaseMapComponent } from './base-map/base-map.component'
 import { Subscription } from 'rxjs';
 import { OverlayContainer } from '@angular/cdk/overlay';
@@ -21,6 +21,8 @@ import { EmissionComponent } from './emission/emission.component';
 import { SaveScenarioComponent } from './dialogs/save-scenario/save-scenario.component';
 import { ScenarioListComponent } from './scenario-list/scenario-list.component';
 import { ScenariosEmissionsComponent } from './scenarios-emissions/scenarios-emissions.component';
+import { RunSimulationComponent } from './dialogs/run-simulation/run-simulation.component';
+import { DatePipe } from '@angular/common';
 
 @NgModule({
   declarations: [
@@ -31,10 +33,11 @@ import { ScenariosEmissionsComponent } from './scenarios-emissions/scenarios-emi
     EmissionComponent,
     SaveScenarioComponent,
     ScenarioListComponent,
-    ScenariosEmissionsComponent
+    ScenariosEmissionsComponent,
+    RunSimulationComponent
   ],
   imports: [
-    BrowserModule,FormsModule,MatDialogModule, MatListModule,MatIconModule, HttpClientModule,MatExpansionModule,MatTooltipModule,MatFormFieldModule,MatInputModule,MatBottomSheetModule,MatSelectModule,
+    BrowserModule,FormsModule,MatDialogModule,MatDatepickerModule, MatNativeDateModule, MatListModule,MatIconModule, HttpClientModule,MatExpansionModule,MatTooltipModule,MatFormFieldModule,MatInputModule,MatBottomSheetModule,MatSelectModule,
     BrowserAnimationsModule,MatToolbarModule,MatInputModule,MatButtonModule,MatCardModule,MatButtonToggleModule,
     RouterModule.forRoot([
       { path: '', component: AppComponent },
@@ -52,7 +55,7 @@ import { ScenariosEmissionsComponent } from './scenarios-emissions/scenarios-emi
         deps: [OidcConfigService, HttpClient],
         multi: true,
     },
-    SessionService, DialogsService
+    SessionService, DialogsService, DatePipe
   ],
   exports:[MatInputModule, MatFormFieldModule],
   bootstrap: [AppComponent]

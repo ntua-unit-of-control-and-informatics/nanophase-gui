@@ -27,7 +27,7 @@
       <mat-label>Compartment</mat-label>
       <mat-select [(value)]="feature.properties.compartment" class="emission-form-width">
         <mat-option value="Surface water">Surface water</mat-option>
-        <mat-option value="Soil">Soil</mat-option>
+        <!-- <mat-option value="Soil">Soil</mat-option> -->
       </mat-select>
     </mat-form-field>
 
@@ -52,7 +52,7 @@
     <mat-form-field class="emission-form-width">
         <mat-label>Emission</mat-label>
         <input matInput placeholder="Emission" required [(ngModel)]="feature.properties.emission">
-        <mat-hint>Kg per square meter per year</mat-hint>
+        <mat-hint>kg / m**2 / year</mat-hint>
       </mat-form-field>
 
 
@@ -101,7 +101,7 @@
     <mat-form-field class="emission-form-width">
       <mat-label>Emission</mat-label>
       <input matInput placeholder="Emission" required [(ngModel)]="feature.properties.emission">
-      <mat-hint>Kg per square meter per year</mat-hint>
+      <mat-hint>kg / m**2 / year</mat-hint>
     </mat-form-field>
 
   </div>
