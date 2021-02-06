@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Emission } from '../models/emission';
 import { SessionService } from '../session/session.service';
-import { ConcatSource } from 'webpack-sources';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-scenarios-emissions',
@@ -13,10 +13,9 @@ export class ScenariosEmissionsComponent implements OnInit {
   scenariosEmissions:Array<Emission> = []
   showEmissions:boolean = false;
 
-
-
   constructor(
-    private _sessionService:SessionService
+    private _sessionService:SessionService,
+    private _router:Router
   ) { 
     this._sessionService.getShowScenariosEmissions().subscribe(val =>{
       if(val === "true"){
@@ -48,13 +47,13 @@ export class ScenariosEmissionsComponent implements OnInit {
         }
       }
     })
-
   }
 
   ngOnInit(): void {
   }
 
   onRowClicked(ems){
+    this._router.navigate(['/'])
     this._sessionService.setFlyToShownEmissions(ems)
   }
 

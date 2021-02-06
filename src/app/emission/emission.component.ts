@@ -17,7 +17,11 @@ export class EmissionComponent implements OnInit {
   fromMap:Subscription
   // toMap:Subscription
 
+  configured:Subscription
+
   total:Number
+  pageSize:Number = 10
+  pageSizeOptions = [10]
 
   constructor(
     private _emmissionApi:EmissionsApiService,
@@ -29,9 +33,17 @@ export class EmissionComponent implements OnInit {
        this.emissionsShown.unshift(em)
       //  this.emissionsShown.push(em) 
     })
+
    }
 
   ngOnInit(): void {
+
+    // this.configured = this._sessionService.getConfigured().subscribe(c =>{
+    //   if(c === 'true'){
+
+    //   }
+    // })
+
     let params = new HttpParams().set('skip', "0").set('maximum', "10")
     this._emmissionApi.getList(params).subscribe(emis=>{
       emis.forEach(e=>{
@@ -42,10 +54,27 @@ export class EmissionComponent implements OnInit {
     this._emmissionApi.count().subscribe(t=>{
       this.total = Number(t.headers.get('total'))
     })
+
   }
 
   onRowClicked(ems){
     this._sessionService.setEmissionForMap(ems)
+    this._sessionService.setShowSimulationsEmissions('false')
+  }
+
+  pageEvent(ev){
+    let pageIndex = ev.pageIndex
+    console.log(pageIndex)
+    let start = pageIndex * 10
+    let max = start + 10
+    let params = new HttpParams().set('skip', String(start)).set('maximum', String(max))
+    this.emissionsShown = []
+    this._emmissionApi.getList(params).subscribe(emis=>{
+      emis.forEach(e=>{
+        let emiss:Emission = JSON.parse(e)
+        this.emissionsShown.push(emiss)
+      })
+    })
   }
 
 }

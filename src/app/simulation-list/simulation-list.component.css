@@ -1,0 +1,12 @@
+.deleteb{
+    margin-right: 1em;
+}
+
+.simulation_list{
+    height:200px;
+    overflow: auto;
+}
+
+.list_item:hover{
+    background-color: lightgray;
+}

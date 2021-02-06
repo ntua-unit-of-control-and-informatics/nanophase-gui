@@ -1,0 +1,24 @@
+<div class="dialog">
+    <div mat-subheader>Simulations title and description</div>
+    <form class="input-form">
+        <mat-form-field class="input">
+          <mat-label>Simulations's title</mat-label>
+          <input matInput placeholder="title" required [(ngModel)]="title" [ngModelOptions]="{standalone: true}">
+        </mat-form-field>
+      
+        <mat-form-field class="input">
+            <mat-label>Simulations's description</mat-label>
+            <input matInput placeholder="description" required [(ngModel)]="description" [ngModelOptions]="{standalone: true}">
+          </mat-form-field>
+      </form>
+
+      <mat-form-field>
+        <mat-label>Choose a start date for the simulation</mat-label>
+        <input matInput [matDatepicker]="picker" [(ngModel)]="startDate" [ngModelOptions]="{standalone: true}">
+        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+        <mat-datepicker #picker></mat-datepicker>
+      </mat-form-field>
+
+      <button mat-raised-button color="primary" (click)="onSave()" class="okb">Ok</button>
+</div>
+

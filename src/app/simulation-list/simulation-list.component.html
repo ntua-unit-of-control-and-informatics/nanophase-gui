@@ -1,0 +1,21 @@
+<mat-list *ngIf="simulationsShown" class="simulation_list">
+    <div *ngFor="let sim of simulationsShown;">
+        <mat-list-item  class="list_item" >
+            <mat-icon mat-list-icon>scatter_plot</mat-icon>
+            <div mat-line matTooltip="{{sim.description}}">{{sim.title}}</div>
+            <div *ngIf="sim.date" mat-line> {{sim.date | date}} </div>
+            <button mat-mini-fab color="warn" matTooltip="Delete simularion" class="deleteb" (click)="deleteSimulation(sim)">
+                <mat-icon>delete</mat-icon>
+              </button>
+            <button mat-mini-fab color="accent" matTooltip="View simulation" (click)="viewSimulation(sim)">
+                <mat-icon>forward</mat-icon>
+            </button>
+          </mat-list-item>
+    </div>
+</mat-list>
+
+<mat-paginator [length]="total"
+    [pageSize]="pageSize"
+    [pageSizeOptions]="pageSizeOptions"
+    (page)="pageEvent($event)">
+</mat-paginator>

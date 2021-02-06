@@ -4,7 +4,7 @@ import * as mapboxgl from 'mapbox-gl';
 import { environment } from 'src/environments/environment.prod';
 import { OidcSecurityService } from 'angular-auth-oidc-client';
 import { SessionService } from '../session/session.service';
-import { Subscription } from 'rxjs';
+import { Observable, Subscription, of } from 'rxjs';
 import { SheetsService } from '../bottom-sheets/sheets-services.service';
 import { EmissionsApiService } from '../api-client/emissions-api.service';
 import { Emission } from '../models/emission';
@@ -17,6 +17,12 @@ import { DatePipe } from '@angular/common';
 declare var require: any;
 var MapboxDraw = require('@mapbox/mapbox-gl-draw');
 var turf = require('@turf/turf');
+import { Deck } from '@deck.gl/core';
+import { GeoJsonLayer } from '@deck.gl/layers';
+import {GridLayer} from '@deck.gl/aggregation-layers';
+import { MapboxLayer } from '@deck.gl/mapbox';
+import { ScatterplotLayer } from '@deck.gl/layers';
+
 
 @Component({
   selector: 'app-base-map',
@@ -40,11 +46,15 @@ export class BaseMapComponent implements OnInit {
 
   scenarioOnScreen:boolean = false
 
+  simulationsEmissions:boolean = false;
+  
   draws: any //mapboxgl..MapboxGeoJSONFeature
 
+  objectHovered: any
+
   bounds = new mapboxgl.LngLatBounds(
-    new mapboxgl.LngLat(-1.390769, 51.291669),// Notio-Dutika coordinates
-    new mapboxgl.LngLat(0.734746, 51.806683)  // Borio-Anatolika coordinates
+    new mapboxgl.LngLat(-3.94, 50.30),// Dutika-Notio coordinates
+    new mapboxgl.LngLat(1.92, 52.64)  // Anatolika-Borio coordinates
   );
   
    draw = new MapboxDraw({
@@ -61,7 +71,7 @@ export class BaseMapComponent implements OnInit {
       private _emissionsApi:EmissionsApiService,
       private _dialogsService:DialogsService,
       private _scenarioApi:ScenarioApiService, private _simulationApi:SimulationApiService, public datepipe: DatePipe){
-
+        
     }
 
     ngOnInit() {
@@ -136,7 +146,6 @@ export class BaseMapComponent implements OnInit {
           let mapStyle = 'mapbox://styles/mapbox/light-v9'
           this.map.setStyle(mapStyle) 
         }
-
         if(theme.data === "dark-theme"){
           let mapStyle = 'mapbox://styles/mapbox/dark-v9'
           this.map.setStyle(mapStyle) 
@@ -220,8 +229,23 @@ export class BaseMapComponent implements OnInit {
         }
       })
       
+      this.sessionService.getShowSimulationsEmissions().subscribe(val=>{
+        if(val){
+          if(val === 'false'){
+            this.simulationsEmissions = false;
+          }else if(val === 'true'){
+            this.simulationsEmissions = true;
+          }
+        }
+      })
       this.featureSelection()
       this.onUpdate()
+    
+      this.sessionService.getShowSimsGEOJson().subscribe(data =>{
+        this.setLayers(this.map, data)
+        // console.log(data)
+      })
+  
     }   
 
   public onStyleLoad(){
@@ -237,9 +261,9 @@ export class BaseMapComponent implements OnInit {
     });
   }
 
- public loadLayer(){
-  this.map.addSource('scenario', { type: 'geojson', data: this.draws })
- }
+  public loadLayer(){
+    this.map.addSource('scenario', { type: 'geojson', data: this.draws })
+  }
 
   createAndUpdatePolugon() {
     this.map.on('draw.create',()=>{
@@ -341,7 +365,6 @@ export class BaseMapComponent implements OnInit {
     })
   }
 
-
   checkSaveScenario(){
     let data = this.draw.getAll()
     if(data.features.length > 0 && this.scenarioOnScreen === false){
@@ -384,7 +407,6 @@ export class BaseMapComponent implements OnInit {
     })
   }
 
-
   onRunScenario(){
     this._dialogsService.onRunSimulation().subscribe(res=>{
       if(res){
@@ -410,6 +432,58 @@ export class BaseMapComponent implements OnInit {
   findIndexToUpdate(item) { 
     return item.id === this;
   }
+
+
+  setLayers(m: mapboxgl.Map, data: any) {
+    const layer = m.getLayer('scatter')
+    if (!!layer) {
+      m.removeLayer('scatter')
+    }
+
+    const scatter = new MapboxLayer({
+      id: 'scatter',
+      type: GeoJsonLayer,
+      data,
+      source: 'scatter',
+      opacity: 0.6,
+      filled: true,
+      pointRadiusUnits: 'meters',
+      // pointRadiusMinPixels: 2,
+      stroked: true,
+      extruded: false,
+      pointRadiusScale: 80,
+      getRadius: 20,
+      getFillColor: [200, 40, 40, 180],
+      pickable: true,
+      autoHighlight: true,
+      onClick: ({ object, x, y }) => {
+        if (!!object) {
+          let popup = new mapboxgl.Popup({
+            closeButton: true,
+            closeOnClick: false
+          });
+          this.objectHovered = object
+          let description = "<h5>Simulation values</h5>"
+          description = description + "<div class='simulation-out' style='max-height:200px; overflow:auto;'>"
+          for (let key of Object.keys(object['properties'])){
+            description = description + " <p>" + key + ": " + object['properties'][key] + "</p>"
+          }
+          description = description + "</div>"
+          description = description + "<p><button mat-flat-button onclick=' + { this.useAsInput } + '> Use values</button> </p> "
+          popup.setLngLat(object.geometry.coordinates).setHTML(description).addTo(m)
+        }
+        else{
+          // this.popup.remove()
+        }
+    }
+    });
+    m.addLayer(scatter);
+  }
+
+  useAsInput(){
+    console.log(this.objectHovered)
+  }
+
 
 
 }

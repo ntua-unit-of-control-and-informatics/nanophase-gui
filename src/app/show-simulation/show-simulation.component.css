@@ -1,0 +1,64 @@
+.show-simulation{
+    position: absolute;
+    bottom: 10px;
+    left: 10px;
+    opacity: 1;
+    width: 400px;
+    height: 320px;
+    /* background-color: wheat; */
+}
+
+.task_messages{
+    height: 80px;
+    overflow: scroll;
+    padding-left: 1em;
+    padding-right: 1em;
+}
+
+.percentage{
+    margin-top: 0.5em;
+    margin-bottom: 0.5em;
+    margin-left: 1em;
+}
+
+.card_content{
+    padding-top: 1em;
+}
+
+.div{
+    max-width: 90%;
+    margin-left: 5%;
+}
+
+.output_toggle{
+    margin-left: 1em;
+}
+
+.output{
+    margin-left: 1em;
+}
+
+.output_day{
+    margin-left: 1em;
+    margin-top: 1.5em;
+}
+
+.slider{
+    width: 70%;
+    margin-left: 1em;
+}
+
+.drop-b{
+    margin-left: 60px;
+    background: slategray;
+}
+
+
+.hide-simulation{
+    position: absolute;
+    bottom: 10px;
+    left: 10px;
+    opacity: 1;
+    width: 400px;
+    height: 68px;
+}

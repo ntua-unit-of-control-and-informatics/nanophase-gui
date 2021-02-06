@@ -1,0 +1,39 @@
+<mat-card class="emissions-card" *ngIf="showEmissions &&!hide_c">
+    <mat-card-header>
+      <mat-card-subtitle>Simulations Emissions</mat-card-subtitle>
+
+      <button mat-mini-fab color="accent" class="drop-b" (click)="hide()" matTooltip="Hide card">
+        <mat-icon>keyboard_arrow_down</mat-icon>
+      </button>
+
+    </mat-card-header>
+    <mat-card-content class="card-content">
+
+        <mat-list *ngIf="simulationsEmissions" class="emisson_list">
+            <div *ngFor="let ems of simulationsEmissions;">
+                <mat-list-item  class="list_item" (click)="onRowClicked(ems)">
+                    <mat-icon mat-list-icon>blur_circular</mat-icon>
+                    <div mat-line matTooltip="{{ems.properties?.description}}">{{ems.properties?.title}}</div>
+                    <div *ngIf="ems.properties?.date" mat-line> {{ems.properties?.date | date}} </div>
+                  </mat-list-item>
+            </div>
+        </mat-list>
+        
+    </mat-card-content>
+    <mat-card-actions>
+      <!-- <button mat-button matTooltip="Run simulation">
+          <mat-icon>arrow_forward_ios </mat-icon>
+      </button> -->
+    </mat-card-actions>
+  </mat-card>
+
+<mat-card class="emissions-card" *ngIf="showEmissions &&hide_c">
+    <mat-card-header>
+      <mat-card-subtitle>Simulations Emissions</mat-card-subtitle>
+
+      <button mat-mini-fab color="accent" class="drop-b" (click)="show()" matTooltip="Show card">
+        <mat-icon>keyboard_arrow_up</mat-icon>
+      </button>
+
+    </mat-card-header>
+</mat-card>

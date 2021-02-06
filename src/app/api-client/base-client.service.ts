@@ -20,8 +20,7 @@ export class BaseClientService < T >{
     protected dialogsService: DialogsService,
     protected oidcSecurityService: OidcSecurityService,
     protected requestPath: String) {
-    this._basePath = Config.nanoFaseApi
-    this._path = this._basePath + this.requestPath
+    this._path = Config.nanoFaseApi + this.requestPath
   }
 
   public post < T > (entity: any): Observable < T > {

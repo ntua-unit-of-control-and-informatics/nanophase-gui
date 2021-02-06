@@ -19,3 +19,26 @@
     height: 45px;
     opacity: 0.9;
 }
+
+
+.nanosolveit{
+    width: 120px;
+    margin-left: 1em;
+    position: absolute;
+    bottom: 0;
+}
+
+
+
+.acknowledgement {
+    max-width: 320px;
+    position: absolute;
+    bottom: 10px;
+    left: 10px;
+    opacity: 0.8;
+}
+  
+.example-header-image {
+    background-image: url('/assets/nanosolveitbw.png');
+    background-size: contain;
+}

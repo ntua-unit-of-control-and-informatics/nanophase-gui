@@ -1,0 +1,70 @@
+<mat-card class="show-simulation" *ngIf="showSimulation && _simulation &&!hide_c">
+    <mat-card-header>
+        <!-- <div mat-card-avatar class="example-header-image"></div> -->
+        <mat-card-title>{{_simulation.title}} simulation</mat-card-title>
+        <mat-card-subtitle>{{_simulation.description}}</mat-card-subtitle>
+        <mat-card-subtitle>Starting date of the simulation {{_simulation.startDate}}</mat-card-subtitle>
+        <button mat-mini-fab color="accent" class="drop-b" (click)="hide()" matTooltip="Hide card">
+          <mat-icon>keyboard_arrow_down</mat-icon>
+        </button>
+    </mat-card-header>
+
+      <mat-divider class="div"></mat-divider>
+
+      <mat-card-content *ngIf="_task && _simulation" class="card_content">
+
+        <div class="percentage">
+            <mat-card-subtitle >
+                Simulation completed {{_task.percentage}} %
+            </mat-card-subtitle>
+          </div>
+
+          <div class="task_messages">
+            <div *ngFor="let m of _task.messages;" >
+                <mat-card-subtitle >
+                    {{m}}
+                </mat-card-subtitle>
+              </div>
+          </div>
+
+          <p class="output">
+
+            Show output for:
+              <mat-button-toggle-group appearance="legacy" name="fontStyle" aria-label="Font Style" class="output_toggle">
+                <mat-button-toggle value="water" *ngIf="_waterOutput" (change)="onValChange($event.value)">Water</mat-button-toggle>
+                <mat-button-toggle value="soil" *ngIf="_soilOutput" (change)="onValChange($event.value)">Soil</mat-button-toggle>
+                <mat-button-toggle value="sediment" *ngIf="_sedimentOutput" (change)="onValChange($event.value)">Sediment</mat-button-toggle>
+              </mat-button-toggle-group>
+          </p>
+
+          <p class="output_day">
+              Output for day:
+            <mat-slider
+                class="slider"
+                (change)="updateSlider($event.value)"
+                [disabled]="disabled"
+                [invert]="invert"
+                [max]="max"
+                [min]="min"
+                [step]="step"
+                [thumbLabel]="thumbLabel"
+                [tickInterval]="getSliderTickInterval()"
+                [(ngModel)]="value"
+                [vertical]="vertical">
+            </mat-slider>
+          </p>
+      </mat-card-content>
+</mat-card>
+
+
+<mat-card class="hide-simulation" *ngIf="showSimulation && _simulation &&hide_c">
+  <mat-card-header>
+      <!-- <div mat-card-avatar class="example-header-image"></div> -->
+      <mat-card-title>{{_simulation.title}} simulation</mat-card-title>
+      <mat-card-subtitle>{{_simulation.description}}</mat-card-subtitle>
+      <mat-card-subtitle>Starting date of the simulation {{_simulation.startDate}}</mat-card-subtitle>
+      <button mat-mini-fab color="accent" class="drop-b" (click)="show()" matTooltip="Show card">
+        <mat-icon>keyboard_arrow_up</mat-icon>
+      </button>
+  </mat-card-header>
+</mat-card>

@@ -26,6 +26,8 @@ export class AppComponent implements OnInit{
   checkSessionChanged$: Observable<boolean>;
   checkSessionChanged: any;
 
+  // showSimulation:boolean = false;
+
   selectedTheme:string = "default-theme"
 
   constructor(
@@ -33,7 +35,18 @@ export class AppComponent implements OnInit{
     private eventService: PublicEventsService,
     private _sessionService:SessionService
   ){
-
+    // this._sessionService.getShowSimulationsEmissions().subscribe(val=>{
+    //   if(val){
+    //     console.log(
+    //       val
+    //     )
+    //     if(val === 'true'){
+    //       this.showSimulation = true;
+    //     }else if(val === 'false'){
+    //       this.showSimulation = false;
+    //     }
+    //   }
+    // })
   }
 
   ngOnInit( ) {

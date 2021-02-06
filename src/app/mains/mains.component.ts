@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { SessionService } from '../session/session.service';
 
 @Component({
   selector: 'app-mains',
@@ -9,9 +10,18 @@ export class MainsComponent implements OnInit {
 
   panelOpenState = false;
   
-  constructor() { }
+  constructor(
+    private sessionService:SessionService
+  ) { 
+    
+
+  }
 
   ngOnInit(): void {
+  }
+
+  setConf(){
+    this.sessionService.setConfigured("true")
   }
 
 }

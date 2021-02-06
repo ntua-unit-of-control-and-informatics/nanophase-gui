@@ -2,15 +2,14 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NgModule,APP_INITIALIZER } from '@angular/core';
 import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { MatToolbarModule, MatButtonModule, MatCardModule, MatButtonToggleGroup, MatButtonToggleModule, MatExpansionModule, MatFormFieldModule, MatInputModule, MatBottomSheetModule, MatSelectModule, MatTooltipModule, MatDialogModule, MatListModule, MatIconModule, MatDatepickerModule, MatNativeDateModule } from '@angular/material/';
+import { MatToolbarModule, MatButtonModule, MatCardModule, MatButtonToggleGroup, MatButtonToggleModule, MatExpansionModule, MatFormFieldModule, MatInputModule, MatBottomSheetModule, MatSelectModule, MatTooltipModule, MatDialogModule, MatListModule, MatIconModule, MatDatepickerModule, MatNativeDateModule, MatSliderModule, MatPaginatorModule } from '@angular/material/';
 import { BaseMapComponent } from './base-map/base-map.component'
-import { Subscription } from 'rxjs';
+import { Subscription, config } from 'rxjs';
 import { OverlayContainer } from '@angular/cdk/overlay';
-import { EventTypes, OidcConfigService, LogLevel, PublicEventsService, AuthModule} from 'angular-auth-oidc-client';
-import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { OidcConfigService, LogLevel, PublicEventsService, AuthModule} from 'angular-auth-oidc-client';
+import { HttpClient, HttpClientModule, HttpClientJsonpModule } from '@angular/common/http';
 import { map, switchMap } from 'rxjs/operators';
-import { configf } from './models/config';
-import { filter } from 'rxjs/operators';
+import { configf } from './models/config.model';
 import { RouterModule } from '@angular/router';
 import { SessionService } from './session/session.service';
 import { MainsComponent } from './mains/mains.component';
@@ -23,6 +22,10 @@ import { ScenarioListComponent } from './scenario-list/scenario-list.component';
 import { ScenariosEmissionsComponent } from './scenarios-emissions/scenarios-emissions.component';
 import { RunSimulationComponent } from './dialogs/run-simulation/run-simulation.component';
 import { DatePipe } from '@angular/common';
+import { Config } from './config/config';
+import { SimulationListComponent } from './simulation-list/simulation-list.component';
+import { SimulationsEmissionsComponent } from './simulations-emissions/simulations-emissions.component';
+import { ShowSimulationComponent } from './show-simulation/show-simulation.component';
 
 @NgModule({
   declarations: [
@@ -34,16 +37,20 @@ import { DatePipe } from '@angular/common';
     SaveScenarioComponent,
     ScenarioListComponent,
     ScenariosEmissionsComponent,
-    RunSimulationComponent
+    RunSimulationComponent,
+    SimulationListComponent,
+    SimulationsEmissionsComponent,
+    ShowSimulationComponent
   ],
   imports: [
-    BrowserModule,FormsModule,MatDialogModule,MatDatepickerModule, MatNativeDateModule, MatListModule,MatIconModule, HttpClientModule,MatExpansionModule,MatTooltipModule,MatFormFieldModule,MatInputModule,MatBottomSheetModule,MatSelectModule,
-    BrowserAnimationsModule,MatToolbarModule,MatInputModule,MatButtonModule,MatCardModule,MatButtonToggleModule,
+    BrowserModule,FormsModule,MatSliderModule,MatDialogModule,MatDatepickerModule, MatNativeDateModule, MatListModule,MatIconModule, HttpClientModule,MatExpansionModule,MatTooltipModule,MatFormFieldModule,MatInputModule,MatBottomSheetModule,MatSelectModule,
+    BrowserAnimationsModule,MatToolbarModule, MatPaginatorModule, MatInputModule,MatButtonModule,MatCardModule,MatButtonToggleModule,
     RouterModule.forRoot([
       { path: '', component: AppComponent },
       { path: 'home', component: AppComponent },
       { path: 'forbidden', component: AppComponent },
       { path: 'unauthorized', component: AppComponent },
+      { path: "simulation/:id", component: AppComponent }
   ]),
     AuthModule.forRoot()
   ],
@@ -52,7 +59,7 @@ import { DatePipe } from '@angular/common';
     {
         provide: APP_INITIALIZER,
         useFactory: configureAuth,
-        deps: [OidcConfigService, HttpClient],
+        deps: [OidcConfigService, HttpClient, SessionService],
         multi: true,
     },
     SessionService, DialogsService, DatePipe
@@ -72,6 +79,7 @@ export class AppModule {
               ) 
   {
     var _theme = sessionService.get('theme');
+    sessionService.setConfigured('false');
     if(_theme === 'dark-theme'){
       
       // this.overlayContainer.getContainerElement().classList.remove("cdk-overlay-container");
@@ -113,9 +121,11 @@ export class AppModule {
   
 }
 
-export function configureAuth(oidcConfigService: OidcConfigService, httpClient: HttpClient) {
+export function configureAuth(oidcConfigService: OidcConfigService, httpClient: HttpClient, sessionService:SessionService) {
   const setupAction$ = httpClient.get<any>(`/assets/conf.json`).pipe(
       map((customConfig:configf) => {
+        Config.nanoFaseApi = customConfig.nanoFaseApi
+        sessionService.setConfigured('true')
           return {
               stsServer: customConfig.stsServer,
               redirectUrl: customConfig.redirect_url,
@@ -140,4 +150,5 @@ export function configureAuth(oidcConfigService: OidcConfigService, httpClient: 
   );
 
   return () => setupAction$.toPromise();
+
 }

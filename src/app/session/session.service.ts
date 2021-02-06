@@ -4,6 +4,7 @@ import {HttpClientModule, HttpClient} from '@angular/common/http';
 import { Emission } from '../models/emission';
 import { Scenario } from '../models/scenario';
 import { EmissionsApiService } from '../api-client/emissions-api.service';
+import { Simulation } from '../models/simulation';
 
 
 @Injectable()
@@ -21,16 +22,25 @@ export class SessionService{
     private scenarioForMap = new Subject<Scenario>();
 
     private scenariosEmissions = new Subject<Emission>();
+
+    private simulationsEmissions = new Subject<Emission>();
+
     private showScenariosEmissions = new Subject<string>();
+
+    private showSimulationsEmissions = new Subject<string>();
 
     private flyToShownEmissions = new Subject<Emission>();
 
     private removeFromShownEmissions = new Subject<Emission>();
 
+    private showSimsGEOJson = new Subject<any>();
+
+    private configured = new Subject<String>();
+
     constructor(
         private _emissionsApi:EmissionsApiService
     ){
-
+        
     }
 
     getSubjectId(): Observable<any>{
@@ -72,13 +82,20 @@ export class SessionService{
         return this.emissionForList.asObservable()
     }
 
+    getConfigured(){
+        return this.configured.asObservable()
+    }
 
+    setConfigured(configured:String){
+        this.configured.next(configured)
+    }
 
     setScenarioForMap(emm:Scenario){
         this.scenarioForMap.next(null)
         // this.emmissionForMap.next(null)
         this.scenariosEmissions.next(null)
         this.scenarioForMap.next(emm)
+        this.setShowSimulationsEmissions('false')
         emm.emissions.forEach(em=>{
             this._emissionsApi.getWithIdSecured(em).subscribe(em=>{
                 if(em){
@@ -86,6 +103,34 @@ export class SessionService{
                 }
             })
         })
+    }
+
+    setSimulationForMap(sim:Simulation){
+        this.scenarioForMap.next(null)
+        // this.emmissionForMap.next(null)
+        this.scenariosEmissions.next(null)
+        this.setShowScenariosEmissions('false')
+        this.setShowSimulationsEmissions('true')
+        // this.scenarioForMap.next(sim)
+        sim.emissions.forEach(em=>{
+            this._emissionsApi.getWithIdSecured(em).subscribe(em=>{
+                if(em){
+                    this.simulationsEmissions.next(em)
+                }
+            })
+        })
+    }
+
+    getSimulationsEmissions(){
+        return this.simulationsEmissions.asObservable()
+    }
+
+    getShowSimulationsEmissions(){
+        return this.showSimulationsEmissions.asObservable()
+    }
+
+    setShowSimulationsEmissions(emm:string){
+        this.showSimulationsEmissions.next(emm)
     }
 
     getScenarioForMap(){
@@ -99,7 +144,6 @@ export class SessionService{
     getScenarioForList(){
         return this.scenarioForList.asObservable()
     }
-
 
     setScenariosEmissions(emm:Emission){
         this.scenariosEmissions.next(emm)
@@ -131,6 +175,14 @@ export class SessionService{
 
     getRemoveFromShownEmissions(){
         return this.removeFromShownEmissions.asObservable()
+    }
+
+    setShowSimsGEOJson(data:any){
+        return this.showSimsGEOJson.next(data)
+    }
+
+    getShowSimsGEOJson(){
+        return this.showSimsGEOJson.asObservable()
     }
 
     get(key: any){
@@ -182,6 +234,5 @@ export class SessionService{
         }
         return localStorage.setItem(key, data);
     }
-
 
 }

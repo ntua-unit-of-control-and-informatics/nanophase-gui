@@ -13,3 +13,9 @@
           </mat-list-item>
     </div>
 </mat-list>
+
+<mat-paginator [length]="total"
+    [pageSize]="pageSize"
+    [pageSizeOptions]="pageSizeOptions"
+    (page)="pageEvent($event)">
+</mat-paginator>

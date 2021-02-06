@@ -1,0 +1,14 @@
+.dialog{
+    width:320px;
+    height:240px;
+    overflow: auto;
+}
+
+.input{
+    width:100%;
+}
+
+.okb{
+    float: right;
+    margin-top: 1em;
+}
