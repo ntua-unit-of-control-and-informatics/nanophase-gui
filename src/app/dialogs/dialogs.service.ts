@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 // import { ErrorReport } from '../accounts-api/models/models';
-import { MatDialog, MatDialogRef } from '@angular/material';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { HttpErrorResponse } from '@angular/common/http';
 import { ErrorDialogComponent } from './error-dialog/error-dialog.component';
 import { SaveScenarioComponent } from './save-scenario/save-scenario.component';

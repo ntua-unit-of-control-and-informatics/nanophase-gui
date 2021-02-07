@@ -4,7 +4,7 @@ import { OidcSecurityService, PublicConfiguration, OidcClientNotification, Publi
 import { Subscription, Observable } from 'rxjs';
 import { filter } from 'rxjs/operators';
 import { SessionService } from './session/session.service';
-import { MatButtonToggle } from '@angular/material';
+import { MatButtonToggle } from '@angular/material/button-toggle';
 
 @Component({
   selector: 'app-root',

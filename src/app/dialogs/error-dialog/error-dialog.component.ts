@@ -1,6 +1,7 @@
 import { Component, Inject } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
-import { MatFormFieldControl, MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { MatFormFieldControl } from '@angular/material/form-field';
 import {NgModel} from '@angular/forms';
 import { environment } from '../../../environments/environment';
 

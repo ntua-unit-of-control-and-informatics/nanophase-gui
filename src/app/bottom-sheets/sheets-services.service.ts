@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { MatBottomSheet, MatBottomSheetRef } from '@angular/material';
+import { MatBottomSheet, MatBottomSheetRef } from '@angular/material/bottom-sheet';
 import { AddEmmisionsComponent } from './add-emmisions/add-emmisions.component';
 
 @Injectable({
