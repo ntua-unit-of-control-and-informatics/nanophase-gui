@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { ScenariosEmissionsComponent } from './scenarios-emissions.component';
 
@@ -6,7 +6,7 @@ describe('ScenariosEmissionsComponent', () => {
   let component: ScenariosEmissionsComponent;
   let fixture: ComponentFixture<ScenariosEmissionsComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ ScenariosEmissionsComponent ]
     })

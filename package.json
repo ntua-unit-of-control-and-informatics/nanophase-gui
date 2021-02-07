@@ -11,16 +11,16 @@
   },
   "private": true,
   "dependencies": {
-    "@angular/animations": "~9.1.4",
-    "@angular/cdk": "~8.2.3",
-    "@angular/common": "~9.1.4",
-    "@angular/compiler": "~9.1.4",
-    "@angular/core": "~9.1.4",
-    "@angular/forms": "~9.1.4",
+    "@angular/animations": "~11.1.2",
+    "@angular/cdk": "~11.1.2",
+    "@angular/common": "~11.1.2",
+    "@angular/compiler": "~11.1.2",
+    "@angular/core": "~11.1.2",
+    "@angular/forms": "~11.1.2",
     "@angular/material": "^8.2.3",
-    "@angular/platform-browser": "~9.1.4",
-    "@angular/platform-browser-dynamic": "~9.1.4",
-    "@angular/router": "~9.1.4",
+    "@angular/platform-browser": "~11.1.2",
+    "@angular/platform-browser-dynamic": "~11.1.2",
+    "@angular/router": "~11.1.2",
     "@deck.gl/core": "^8.2.7",
     "@deck.gl/layers": "^8.2.7",
     "@mapbox/mapbox-gl-draw": "^1.1.2",
@@ -42,10 +42,10 @@
     "os": false
   },
   "devDependencies": {
-    "@angular-devkit/build-angular": "^0.1000.0-rc.3",
+    "@angular-devkit/build-angular": "^0.1101.4",
     "@angular/cli": "~9.1.4",
-    "@angular/compiler-cli": "~9.1.4",
-    "@angular/language-service": "~9.1.4",
+    "@angular/compiler-cli": "~11.1.2",
+    "@angular/language-service": "~11.1.2",
     "@types/jasmine": "~3.3.8",
     "@types/jasminewd2": "~2.0.3",
     "@types/node": "^12.11.1",
@@ -60,6 +60,6 @@
     "protractor": "~5.4.4",
     "ts-node": "~7.0.0",
     "tslint": "~6.1.0",
-    "typescript": "^3.8.3"
+    "typescript": "^4.1.3"
   }
 }

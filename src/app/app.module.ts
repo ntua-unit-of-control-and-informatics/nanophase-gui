@@ -46,12 +46,12 @@ import { ShowSimulationComponent } from './show-simulation/show-simulation.compo
     BrowserModule,FormsModule,MatSliderModule,MatDialogModule,MatDatepickerModule, MatNativeDateModule, MatListModule,MatIconModule, HttpClientModule,MatExpansionModule,MatTooltipModule,MatFormFieldModule,MatInputModule,MatBottomSheetModule,MatSelectModule,
     BrowserAnimationsModule,MatToolbarModule, MatPaginatorModule, MatInputModule,MatButtonModule,MatCardModule,MatButtonToggleModule,
     RouterModule.forRoot([
-      { path: '', component: AppComponent },
-      { path: 'home', component: AppComponent },
-      { path: 'forbidden', component: AppComponent },
-      { path: 'unauthorized', component: AppComponent },
-      { path: "simulation/:id", component: AppComponent }
-  ]),
+    { path: '', component: AppComponent },
+    { path: 'home', component: AppComponent },
+    { path: 'forbidden', component: AppComponent },
+    { path: 'unauthorized', component: AppComponent },
+    { path: "simulation/:id", component: AppComponent }
+], { relativeLinkResolution: 'legacy' }),
     AuthModule.forRoot()
   ],
   providers: [
