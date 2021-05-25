@@ -5,6 +5,8 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { ErrorDialogComponent } from './error-dialog/error-dialog.component';
 import { SaveScenarioComponent } from './save-scenario/save-scenario.component';
 import { RunSimulationComponent } from './run-simulation/run-simulation.component';
+import { ShowPointOutComponent } from './show-point-out/show-point-out.component';
+import { ConfirmationComponent } from './confirmation/confirmation.component';
 
 @Injectable({
   providedIn: 'root'
@@ -46,6 +48,27 @@ export class DialogsService {
     return dialogRef.afterClosed();
   }
 
+  public onShowOutput(object, x, y, output_type){
+    let dialogRef: MatDialogRef<ShowPointOutComponent>;
+    dialogRef = this.dialog.open(ShowPointOutComponent);
+    dialogRef.componentInstance.object = object;
+    dialogRef.componentInstance.x = x;
+    dialogRef.componentInstance.y = y;
+
+    dialogRef.componentInstance.output_type = output_type
+    // dialogRef.componentInstance.simulation_id = simulation_id
+
+
+    return dialogRef.afterClosed();
+  }
+
+  public onConfirm(message:string, action:string){
+    let dialogRef: MatDialogRef<ConfirmationComponent>;
+    dialogRef = this.dialog.open(ConfirmationComponent);
+    dialogRef.componentInstance.confirmationMessage = message
+    dialogRef.componentInstance.confirmationAction = action
+    return dialogRef.afterClosed();
+  }
 
   // public onMessage(message:string){
   //   let dialogRef: MatDialogRef<ErrorDialogComponent>;

@@ -4,7 +4,7 @@
     left: 10px;
     opacity: 1;
     width: 400px;
-    height: 320px;
+    height: 470px;
     /* background-color: wheat; */
 }
 
@@ -46,6 +46,7 @@
 .slider{
     width: 70%;
     margin-left: 1em;
+
 }
 
 .drop-b{
@@ -61,4 +62,12 @@
     opacity: 1;
     width: 400px;
     height: 68px;
+}
+
+.render_val{
+    width:370px;
+}
+
+.render_form{
+    margin-left: 1em;
 }

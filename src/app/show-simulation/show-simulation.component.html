@@ -37,6 +37,20 @@
               </mat-button-toggle-group>
           </p>
 
+
+          <form class="render_form">
+            <h4>Select render value</h4>
+            <mat-form-field class="render_val">
+              <mat-label>Render</mat-label>
+              <mat-select [(ngModel)]="selectedRenderValue" [ngModelOptions]="{standalone: true}" (selectionChange)="setRender($event)">
+                <mat-option *ngFor="let val of _selectRender" [value]= "val">
+                  {{val}}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </form>
+
+
           <p class="output_day">
               Output for day:
             <mat-slider

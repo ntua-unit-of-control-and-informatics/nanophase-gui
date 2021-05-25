@@ -1,0 +1,12 @@
+<div>
+    <h2 mat-dialog-title>Confirm</h2>
+    <mat-dialog-content>
+      {{confirmationMessage}}
+      <br><br>
+    </mat-dialog-content>
+    <mat-divider></mat-divider>
+    <mat-dialog-actions>
+      <button mat-raised-button color="warn" (click)="onCloseConfirm()">{{confirmationAction}}</button>&nbsp;
+      <button mat-button (click)="onCloseCancel()">CANCEL</button>
+    </mat-dialog-actions>
+  </div>

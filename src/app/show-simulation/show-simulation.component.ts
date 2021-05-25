@@ -9,7 +9,7 @@ import { HttpParams } from '@angular/common/http';
 import { Task } from '../models/task';
 import { Subscription } from 'rxjs';
 import { filter } from 'rxjs/operators';
-
+import { GeoJson } from '../models/geojson';
 
 
 @Component({
@@ -33,6 +33,9 @@ export class ShowSimulationComponent implements OnInit {
   _soilOutputDay:Number;
   _sedimentOutputDay:Number;
 
+  _selectRender = [];
+
+  selectedRenderValue:String
   uns:Subscription
 
   autoTicks = true;
@@ -187,7 +190,7 @@ export class ShowSimulationComponent implements OnInit {
             this._sedimentOutputDay = Number(s_key.split("_")[s_key.split("_").length -1])
           }
         })
-        console.log(t)
+        // console.log(t)
       })
     }
   }
@@ -196,22 +199,65 @@ export class ShowSimulationComponent implements OnInit {
     this.disabled = false;
     this.view_output = val
     if(val === 'water'){
+      this._sessionService.setShowSimulationOutput(val)
       this.max = this._waterOutputDay
+      
+      let httpPars = new HttpParams().set('id', this._simulationId).set('output_type', this.view_output).set('day', "1")
+      this._simulationApi.getOneWithParam(httpPars).subscribe((resp:GeoJson)=>{
+        if(resp){
+          this._selectRender = []
+          for(let key in resp.features[0].properties){
+            this._selectRender.push(key)
+          }
+        }
+      })
+
     }
     if(val === 'soil'){
+      this._sessionService.setShowSimulationOutput(val)
       this.max = this._soilOutputDay
+
+      let httpPars = new HttpParams().set('id', this._simulationId).set('output_type', this.view_output).set('day', "1")
+      this._simulationApi.getOneWithParam(httpPars).subscribe((resp:GeoJson)=>{
+        if(resp){
+          this._selectRender = []
+          for(let key in resp.features[0].properties){
+            this._selectRender.push(key)
+          }
+        }
+      })
     }
     if(val === 'sediment'){
+      this._sessionService.setShowSimulationOutput(val)
       this.max = this._sedimentOutputDay
+      let httpPars = new HttpParams().set('id', this._simulationId).set('output_type', this.view_output).set('day', "1")
+      this._simulationApi.getOneWithParam(httpPars).subscribe((resp:GeoJson)=>{
+        if(resp){
+          this._selectRender = []
+          for(let key in resp.features[0].properties){
+            this._selectRender.push(key)
+          }
+        }
+      })
     }
   }
 
   updateSlider(val){
+    if(val === 0){
+      val = 1
+    }
     let httpPars = new HttpParams().set('id', this._simulationId).set('output_type', this.view_output).set('day', val)
     this._simulationApi.getOneWithParam(httpPars).subscribe(resp=>{
       // console.log(resp)
       this._sessionService.setShowSimsGEOJson(resp)
     })
+  }
+
+  setRender(ev){
+    // console.log(ev.value)
+    this.selectedRenderValue = ev.value
+    this._sessionService.setRenderValue(ev.value)
+    // this._sessionService.setShowSimsGEOJson(resp)
   }
 
   hide(){

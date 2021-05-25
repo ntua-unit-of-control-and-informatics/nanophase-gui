@@ -8,6 +8,7 @@ import { Observable, Subscription, of } from 'rxjs';
 import { SheetsService } from '../bottom-sheets/sheets-services.service';
 import { EmissionsApiService } from '../api-client/emissions-api.service';
 import { Emission } from '../models/emission';
+import { GeoFeature, GeoJson } from '../models/geojson';
 import { DialogsService } from '../dialogs/dialogs.service';
 import { Scenario } from '../models/scenario';
 import { ScenarioApiService } from '../api-client/scenario-api.service';
@@ -22,6 +23,8 @@ import { GeoJsonLayer } from '@deck.gl/layers';
 import {GridLayer} from '@deck.gl/aggregation-layers';
 import { MapboxLayer } from '@deck.gl/mapbox';
 import { ScatterplotLayer } from '@deck.gl/layers';
+import { Geometry } from '../models/geometry';
+import { ThrowStmt } from '@angular/compiler';
 
 
 @Component({
@@ -42,11 +45,17 @@ export class BaseMapComponent implements OnInit {
 
   fromScenarioList:Subscription
 
+  showSimulationFor: Subscription
+
   saveScenario:boolean = false
 
   scenarioOnScreen:boolean = false
 
   simulationsEmissions:boolean = false;
+
+  simulationType:string = ""
+
+  renderValue:string
   
   draws: any //mapboxgl..MapboxGeoJSONFeature
 
@@ -82,9 +91,8 @@ export class BaseMapComponent implements OnInit {
         this.map = new mapboxgl.Map({
           container: 'map-mapbox', 
           style: mapStyle,
-          // center: [-0.7008827,51.5626992],
-          maxBounds : this.bounds,  //Restrict map panning to an area 
-          interactive: true      //Display a non-interactive map
+          maxBounds : this.bounds,  
+          interactive: true     
           });
           this._oidcService.isAuthenticated$.subscribe(
             (isAuthorized: boolean) => {
@@ -104,7 +112,7 @@ export class BaseMapComponent implements OnInit {
           container: 'map-mapbox', 
           style: mapStyle,
           // center: [-0.7008827,51.5626992],
-          maxBounds : this.bounds,  //Restrict map panning to an area 
+          maxBounds : this.bounds, 
           interactive: true      //Display a non-interactive map
           });
           this._oidcService.isAuthenticated$.subscribe(
@@ -125,7 +133,7 @@ export class BaseMapComponent implements OnInit {
           container: 'map-mapbox', 
           style: mapStyle,
           // center: [-0.7008827,51.5626992],
-          maxBounds : this.bounds,  //Restrict map panning to an area 
+          maxBounds : this.bounds,  
           interactive: true      //Display a non-interactive map
           });
           this._oidcService.isAuthenticated$.subscribe(
@@ -233,15 +241,49 @@ export class BaseMapComponent implements OnInit {
         if(val){
           if(val === 'false'){
             this.simulationsEmissions = false;
+            this.map.setPitch(0);
+            if(this.map.getLayer('scatter')){
+              this.map.removeLayer('scatter')
+            }
+            
           }else if(val === 'true'){
             this.simulationsEmissions = true;
+            this.map.setPitch(45);
+            this.sessionService.getRenderValue().subscribe(val =>{
+              if(val){
+                this.renderValue = val
+              }
+            })
           }
         }
       })
       this.featureSelection()
       this.onUpdate()
+
+      this.sessionService.getShowSimulationOutput().subscribe((type:string)=>{
+        this.simulationType = type
+      })
     
-      this.sessionService.getShowSimsGEOJson().subscribe(data =>{
+      this.sessionService.getShowSimsGEOJson().subscribe((data:GeoJson) =>{
+        // for(let i in data.features){
+        //   var geofeature:GeoFeature = data.features[i]
+        //   var newgf:GeoFeature = <GeoFeature>{};
+        //   var geom:Geometry = <Geometry>{};
+        //   newgf.properties = geofeature.properties
+        //   newgf.geometry = geom;
+        //   newgf.geometry.type = "Polygon";
+        //   newgf.geometry.coordinates = [[[geofeature.geometry.coordinates[0] - 0.02, geofeature.geometry.coordinates[1] - 0.018]
+        //   ,[geofeature.geometry.coordinates[0] - 0.02, geofeature.geometry.coordinates[1] + 0.02]
+        //   ,[geofeature.geometry.coordinates[0] + 0.03, geofeature.geometry.coordinates[1] + 0.02]
+        //   ,[geofeature.geometry.coordinates[0] + 0.03, geofeature.geometry.coordinates[1] - 0.018]
+        //   ,[geofeature.geometry.coordinates[0] - 0.02, geofeature.geometry.coordinates[1] - 0.018]]]
+        //   data.features[i] = newgf
+        // }
+        this.sessionService.getRenderValue().subscribe(val =>{
+          if(val){
+            this.renderValue = val
+          }
+        })
         this.setLayers(this.map, data)
         // console.log(data)
       })
@@ -444,37 +486,55 @@ export class BaseMapComponent implements OnInit {
       id: 'scatter',
       type: GeoJsonLayer,
       data,
-      source: 'scatter',
-      opacity: 0.6,
+      // data:'https://raw.githubusercontent.com/visgl/deck.gl-data/master/examples/geojson/vancouver-blocks.json',
+
+
+      // source: 'scatter',
+      opacity: 0.4,
       filled: true,
-      pointRadiusUnits: 'meters',
+      // pointRadiusUnits: 'meters',
       // pointRadiusMinPixels: 2,
-      stroked: true,
-      extruded: false,
-      pointRadiusScale: 80,
-      getRadius: 20,
-      getFillColor: [200, 40, 40, 180],
+      stroked: false,
+      extruded: true,
+      wireframe: true,
+      // pointRadiusScale: 80,
+      // getRadius: 20,
+      // getFillColor: [200, 40, 40, 180],
       pickable: true,
       autoHighlight: true,
+      elevationScale: 1,
+      // getElevation: 100,
+      // getElevation: f => Math.sqrt(f.properties.valuePerSqm) * 10,
+      // getElevation: f => f.properties['C_np(kg/m3)'] * 1000,
+      getElevation: f => f.properties[this.renderValue] * 10000000000,
+      getFillColor: f => [160, 40, 40, f.properties[this.renderValue] * 10000000000],
+      // getFillColor: f => [200, 40, 40, 1000],
+      getLineColor: [100, 100, 100],
+
+
       onClick: ({ object, x, y }) => {
-        if (!!object) {
-          let popup = new mapboxgl.Popup({
-            closeButton: true,
-            closeOnClick: false
-          });
-          this.objectHovered = object
-          let description = "<h5>Simulation values</h5>"
-          description = description + "<div class='simulation-out' style='max-height:200px; overflow:auto;'>"
-          for (let key of Object.keys(object['properties'])){
-            description = description + " <p>" + key + ": " + object['properties'][key] + "</p>"
-          }
-          description = description + "</div>"
-          description = description + "<p><button mat-flat-button onclick=' + { this.useAsInput } + '> Use values</button> </p> "
-          popup.setLngLat(object.geometry.coordinates).setHTML(description).addTo(m)
-        }
-        else{
-          // this.popup.remove()
-        }
+        this._dialogsService.onShowOutput(object, x, y, this.simulationType)
+
+        // console.log(x)
+        // console.log(y)
+        // if (!!object) {
+        //   let popup = new mapboxgl.Popup({
+        //     closeButton: true,
+        //     closeOnClick: false
+        //   });
+        //   this.objectHovered = object
+        //   let description = "<h5>Simulation values</h5>"
+        //   description = description + "<div class='simulation-out' style='max-height:200px; overflow:auto;'>"
+        //   for (let key of Object.keys(object['properties'])){
+        //     description = description + " <p>" + key + ": " + object['properties'][key] + "</p>"
+        //   }
+        //   description = description + "</div>"
+        //   description = description + "<p><button mat-flat-button onclick=' + { this.useAsInput() } + '> Use values</button> </p> "
+        //   popup.setLngLat(object.geometry.coordinates[0][0]).setHTML(description).addTo(m)
+        // }
+        // else{
+        //   // this.popup.remove()
+        // }
     }
     });
     m.addLayer(scatter);

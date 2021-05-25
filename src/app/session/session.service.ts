@@ -29,6 +29,10 @@ export class SessionService{
 
     private showSimulationsEmissions = new Subject<string>();
 
+    private showSimulationsType = new Subject<string>();
+
+    private renderSimulationsKey = new Subject<string>();
+
     private flyToShownEmissions = new Subject<Emission>();
 
     private removeFromShownEmissions = new Subject<Emission>();
@@ -121,6 +125,14 @@ export class SessionService{
         })
     }
 
+    setRenderValue(value){
+        this.renderSimulationsKey.next(value)
+    }
+
+    getRenderValue(){
+        return this.renderSimulationsKey.asObservable()
+    }
+
     getSimulationsEmissions(){
         return this.simulationsEmissions.asObservable()
     }
@@ -159,6 +171,14 @@ export class SessionService{
 
     getShowScenariosEmissions(){
         return this.showScenariosEmissions.asObservable()
+    }
+
+    setShowSimulationOutput(emm:string){
+        this.showSimulationsType.next(emm)
+    }
+
+    getShowSimulationOutput(){
+        return this.showSimulationsType.asObservable()
     }
 
     setFlyToShownEmissions(emm:Emission){

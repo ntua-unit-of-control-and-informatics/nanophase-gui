@@ -1,0 +1,50 @@
+<div class="out-dialog">
+    <h4>Showing simulation outputs for point</h4>
+    <h5>with coordinates: [{{xCoords}}, {{yCoords}}]</h5>
+    
+    <mat-dialog-content class="content">
+        
+            <p *ngFor="let val of object['properties'] | keyvalue">
+                {{val.key}} --> {{val.value}}
+            </p>
+
+    </mat-dialog-content>
+    
+    <mat-dialog-actions align="end">
+
+        <p *ngIf="gatheringData">Gathering data for all days</p>
+        <div *ngIf="gatheringData" >
+            <mat-spinner [diameter]="60" class="spinner"></mat-spinner>
+        </div>
+
+        <button mat-button mat-dialog-close>Close</button>
+        <!-- <button mat-button [mat-dialog-close]="true" cdkFocusInitial>Install</button> -->
+    </mat-dialog-actions>
+
+
+    <mat-dialog-actions align="end" class="content2" *ngIf="!gatheringData">
+        
+        <div class="exp">
+            <p class="expp">Time plots for: </p>
+            <button mat-button [matMenuTriggerFor]="menu" class="plotb" matTooltip="Select value to be plotted">
+                <mat-icon>more_vert</mat-icon>
+            </button>
+            <mat-menu #menu="matMenu"  xPosition="after">
+                <h4 class="choose">Choose value</h4>
+                <div class="menu">
+                    <button mat-menu-item *ngFor="let key of plotKeys" (click)="plotValue(key)">{{key}}</button>
+                </div>
+            </mat-menu>
+        </div>
+        
+    </mat-dialog-actions>   
+
+    <div *ngIf="showPlots">
+        <app-multiline-d3 [xs]="xPlot" [ys]="yPlot"></app-multiline-d3>
+    </div>
+    
+
+
+</div>
+
+

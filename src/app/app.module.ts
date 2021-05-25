@@ -2,9 +2,45 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NgModule,APP_INITIALIZER } from '@angular/core';
 import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { MatToolbarModule, MatButtonModule, MatCardModule, MatButtonToggleGroup, MatButtonToggleModule, MatExpansionModule, MatFormFieldModule, MatInputModule, MatBottomSheetModule, MatSelectModule, MatTooltipModule, MatDialogModule, MatListModule, MatIconModule, MatDatepickerModule, MatNativeDateModule, MatSliderModule, MatPaginatorModule } from '@angular/material/';
+// import { MatToolbarModule, MatButtonModule, MatCardModule, MatButtonToggleGroup, MatButtonToggleModule, MatExpansionModule, MatFormFieldModule, MatInputModule, MatBottomSheetModule, MatSelectModule, MatTooltipModule, MatDialogModule, MatListModule, MatIconModule, MatDatepickerModule, MatNativeDateModule, MatSliderModule, MatPaginatorModule } from '@angular/material/';
+
+
+import {MatToolbarModule} from '@angular/material/toolbar'
+import {MatButtonToggleModule} from '@angular/material/button-toggle'
+import {MatChipsModule} from '@angular/material/chips'
+import {MatDialogModule} from '@angular/material//dialog'
+import {MatGridListModule} from '@angular/material/grid-list'
+import {MatProgressBarModule} from '@angular/material/progress-bar'
+import {MatProgressSpinnerModule} from '@angular/material/progress-spinner'
+import {MatRadioModule} from '@angular/material/radio'
+import {MatSelectModule} from '@angular/material/select'
+import {MatSlideToggleModule, _MatSlideToggleRequiredValidatorModule} from '@angular/material/slide-toggle'
+import {MatStepperModule} from '@angular/material/stepper'
+import {MatTabsModule} from '@angular/material/tabs'
+import {MatAutocompleteModule} from '@angular/material/autocomplete'
+import {MatTableModule} from '@angular/material/table'
+import {MatIconModule} from '@angular/material/icon'
+import {MatButtonModule} from '@angular/material/button'
+import {MatCardModule} from '@angular/material/card'
+import {MatSidenavModule} from '@angular/material/sidenav'
+import {MatFormFieldModule} from '@angular/material/form-field'
+import {MatInputModule} from '@angular/material/input'
+import {MatExpansionModule} from '@angular/material/expansion'
+import {MatTooltipModule} from '@angular/material/tooltip'
+import {MatListModule} from '@angular/material/list'
+import {MatPaginatorModule} from '@angular/material/paginator'
+import {MatSnackBarModule} from '@angular/material/snack-bar'
+import {MatBadgeModule} from '@angular/material/badge'
+import {MatMenuModule} from '@angular/material/menu'
+import {MatSliderModule} from '@angular/material/slider'
+import {MatBottomSheetModule} from '@angular/material/bottom-sheet'
+import {MatDatepickerModule} from '@angular/material/datepicker'
+import { MatNativeDateModule } from '@angular/material/core';
+// import { MatMomentDateModule } from "@angular/material-moment-adapter";
+// import {MatNativeDateModule} from '@angular/material/'
+
 import { BaseMapComponent } from './base-map/base-map.component'
-import { Subscription, config } from 'rxjs';
+import { Subscription } from 'rxjs';
 import { OverlayContainer } from '@angular/cdk/overlay';
 import { OidcConfigService, LogLevel, PublicEventsService, AuthModule} from 'angular-auth-oidc-client';
 import { HttpClient, HttpClientModule, HttpClientJsonpModule } from '@angular/common/http';
@@ -26,6 +62,9 @@ import { Config } from './config/config';
 import { SimulationListComponent } from './simulation-list/simulation-list.component';
 import { SimulationsEmissionsComponent } from './simulations-emissions/simulations-emissions.component';
 import { ShowSimulationComponent } from './show-simulation/show-simulation.component';
+import { ShowPointOutComponent } from './dialogs/show-point-out/show-point-out.component';
+import { ConfirmationComponent } from './dialogs/confirmation/confirmation.component';
+import { MultilineD3Component } from './d3/multiline-d3/multiline-d3.component';
 
 @NgModule({
   declarations: [
@@ -40,10 +79,13 @@ import { ShowSimulationComponent } from './show-simulation/show-simulation.compo
     RunSimulationComponent,
     SimulationListComponent,
     SimulationsEmissionsComponent,
-    ShowSimulationComponent
+    ShowSimulationComponent,
+    ShowPointOutComponent,
+    ConfirmationComponent,
+    MultilineD3Component
   ],
   imports: [
-    BrowserModule,FormsModule,MatSliderModule,MatDialogModule,MatDatepickerModule, MatNativeDateModule, MatListModule,MatIconModule, HttpClientModule,MatExpansionModule,MatTooltipModule,MatFormFieldModule,MatInputModule,MatBottomSheetModule,MatSelectModule,
+    BrowserModule, FormsModule, MatSliderModule, MatMenuModule, MatDialogModule, MatProgressSpinnerModule, MatDatepickerModule, MatNativeDateModule, MatListModule,MatIconModule, HttpClientModule,MatExpansionModule,MatTooltipModule,MatFormFieldModule,MatInputModule,MatBottomSheetModule,MatSelectModule,
     BrowserAnimationsModule,MatToolbarModule, MatPaginatorModule, MatInputModule,MatButtonModule,MatCardModule,MatButtonToggleModule,
     RouterModule.forRoot([
     { path: '', component: AppComponent },

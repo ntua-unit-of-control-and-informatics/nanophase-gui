@@ -1,0 +1,53 @@
+.out-dialog{
+    height: 480px;
+    width: 520px;
+}
+
+.content{
+    height: 280px;
+    overflow: auto;
+}
+
+.spinner{
+    margin-right: 2em;
+    margin-left: 1em;
+}
+
+/* mat-spinner{
+    float:left; 
+    width: 24px; 
+    height: 24px; 
+    margin: 5px 10px 0px 0px;
+} */
+
+.plotb{
+    margin-top: 0.4em;
+    float: right;
+}
+
+.exp{
+    width:40%
+}
+
+.expp{
+    float: left;
+}
+
+.mat-menu-content{
+    height:140px;
+}
+
+.menu{
+    height: 140px;
+    overflow: auto;
+}
+
+mat-menu{
+    height: 140px;
+    overflow: auto;   
+}
+
+
+.choose{
+    margin-left: 1em;
+}
