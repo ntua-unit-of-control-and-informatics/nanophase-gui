@@ -1,10 +1,10 @@
 {
     "nanoFaseApi": "https://nanofaseapi.cloud.nanosolveit.eu/",
-    "__nanoFaseApi": "http://localhost:5001/",
+    "__nanoFaseApi": "http://localhost:5000/",
     "__stsServer": "https://login.jaqpot.org/auth/realms/jaqpot",
     "stsServer": "https://login.cloud.nanosolveit.eu/auth/realms/nanosolveit",
-    "redirect_url" : "https://nanofase.cloud.nanosolveit.eu/",
-    "__redirect_url" : "http://localhost:4200/",
+    "__redirect_url" : "https://nanofase.cloud.nanosolveit.eu/",
+    "redirect_url" : "http://localhost:4200/",
     "client_id":"nanofase-app",
     "response_type" : "code",
     "scope": "openid email profile",

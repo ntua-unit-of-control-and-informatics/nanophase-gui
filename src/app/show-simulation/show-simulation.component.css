@@ -3,8 +3,8 @@
     bottom: 10px;
     left: 10px;
     opacity: 1;
-    width: 400px;
-    height: 470px;
+    width: 460px;
+    height: 520px;
     /* background-color: wheat; */
 }
 
@@ -43,14 +43,23 @@
     margin-top: 1.5em;
 }
 
+.output_elev{
+    margin-left: 1em;
+    margin-top: 1.5em;
+}
+
 .slider{
     width: 70%;
     margin-left: 1em;
+}
 
+.slider2{
+    width: 70%;
+    margin-left: 1.6em;
 }
 
 .drop-b{
-    margin-left: 60px;
+    margin-left: 120px;
     background: slategray;
 }
 
@@ -65,9 +74,28 @@
 }
 
 .render_val{
-    width:370px;
+    width:420px;
 }
 
 .render_form{
     margin-left: 1em;
+}
+
+.biouptake_pod{
+    height: 120px;
+    width: 260px;
+    bottom: 70px;
+    right: 14px;
+    position: absolute;
+}
+
+.err-pod{
+    margin-left: 1em;    
+    margin-top:  -1em;
+}
+
+.pod-input{
+    margin-left: 1em;
+    margin-right: 1em;
+    width: 90%;
 }

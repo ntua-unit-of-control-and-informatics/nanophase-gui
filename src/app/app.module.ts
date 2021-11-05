@@ -14,7 +14,7 @@ import {MatProgressBarModule} from '@angular/material/progress-bar'
 import {MatProgressSpinnerModule} from '@angular/material/progress-spinner'
 import {MatRadioModule} from '@angular/material/radio'
 import {MatSelectModule} from '@angular/material/select'
-import {MatSlideToggleModule, _MatSlideToggleRequiredValidatorModule} from '@angular/material/slide-toggle'
+import {MatSlideToggle, MatSlideToggleModule, _MatSlideToggleRequiredValidatorModule} from '@angular/material/slide-toggle'
 import {MatStepperModule} from '@angular/material/stepper'
 import {MatTabsModule} from '@angular/material/tabs'
 import {MatAutocompleteModule} from '@angular/material/autocomplete'
@@ -50,7 +50,7 @@ import { RouterModule } from '@angular/router';
 import { SessionService } from './session/session.service';
 import { MainsComponent } from './mains/mains.component';
 import { AddEmmisionsComponent } from './bottom-sheets/add-emmisions/add-emmisions.component';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { DialogsService } from './dialogs/dialogs.service';
 import { EmissionComponent } from './emission/emission.component';
 import { SaveScenarioComponent } from './dialogs/save-scenario/save-scenario.component';
@@ -85,7 +85,7 @@ import { MultilineD3Component } from './d3/multiline-d3/multiline-d3.component';
     MultilineD3Component
   ],
   imports: [
-    BrowserModule, FormsModule, MatSliderModule, MatMenuModule, MatDialogModule, MatProgressSpinnerModule, MatDatepickerModule, MatNativeDateModule, MatListModule,MatIconModule, HttpClientModule,MatExpansionModule,MatTooltipModule,MatFormFieldModule,MatInputModule,MatBottomSheetModule,MatSelectModule,
+    BrowserModule, FormsModule, MatSliderModule,MatSlideToggleModule, ReactiveFormsModule, MatMenuModule,MatDialogModule, MatProgressSpinnerModule, MatDatepickerModule, MatNativeDateModule, MatListModule,MatIconModule, HttpClientModule,MatExpansionModule,MatTooltipModule,MatFormFieldModule,MatInputModule,MatBottomSheetModule,MatSelectModule,
     BrowserAnimationsModule,MatToolbarModule, MatPaginatorModule, MatInputModule,MatButtonModule,MatCardModule,MatButtonToggleModule,
     RouterModule.forRoot([
     { path: '', component: AppComponent },

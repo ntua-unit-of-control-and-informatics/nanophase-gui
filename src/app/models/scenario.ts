@@ -8,4 +8,5 @@ export interface Scenario{
     _id?:string
     id?:string
     userId?:string
+    pbpk?:boolean
 }

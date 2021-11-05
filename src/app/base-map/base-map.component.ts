@@ -61,6 +61,10 @@ export class BaseMapComponent implements OnInit {
 
   objectHovered: any
 
+  elevationNumder:Number = 10000000000
+
+  podValue:Number = 0
+
   bounds = new mapboxgl.LngLatBounds(
     new mapboxgl.LngLat(-3.94, 50.30),// Dutika-Notio coordinates
     new mapboxgl.LngLat(1.92, 52.64)  // Anatolika-Borio coordinates
@@ -257,6 +261,22 @@ export class BaseMapComponent implements OnInit {
           }
         }
       })
+
+
+      this.sessionService.getElevation().subscribe((elev:Number) =>{
+
+        if(elev){
+          this.elevationNumder = elev
+        }
+      })
+
+
+      this.sessionService.getPodVal().subscribe((pod:Number) =>{
+        if(pod > 0){
+          this.podValue = pod
+        }
+      })
+
       this.featureSelection()
       this.onUpdate()
 
@@ -284,7 +304,7 @@ export class BaseMapComponent implements OnInit {
             this.renderValue = val
           }
         })
-        this.setLayers(this.map, data)
+        this.setLayers(this.map, data, this.podValue)
         // console.log(data)
       })
   
@@ -462,7 +482,9 @@ export class BaseMapComponent implements OnInit {
         simulation.title = res['title']
         simulation.description = res['description']
         simulation.startDate =  this.datepipe.transform(res['startDate'], 'yyyy-MM-dd')
-        
+        simulation.pbpk = res['addpbpk']
+        simulation.pbpkDays = res['pbpkDays']
+
         this._simulationApi.post(simulation).subscribe((res:Simulation) =>{
           console.log(res)
         })
@@ -476,67 +498,87 @@ export class BaseMapComponent implements OnInit {
   }
 
 
-  setLayers(m: mapboxgl.Map, data: any) {
+
+  setLayers(m: mapboxgl.Map, data: any, podVal: Number) {
     const layer = m.getLayer('scatter')
     if (!!layer) {
       m.removeLayer('scatter')
     }
 
+    
+    const COLOR_SCALE = [
+      // negative
+
+    
+      // positive
+      [128, 0, 38],
+      [189, 0, 38],
+      [227, 26, 28],
+      [252, 78, 42],
+      [254, 178, 76],
+      [253, 141, 60],
+      [254, 217, 118],
+      [255, 237, 160],
+      [255, 255, 204],
+      
+
+      [65, 182, 196],
+      [127, 205, 187],
+      [199, 233, 180],
+      [237, 248, 177],
+
+
+    ];
+
     const scatter = new MapboxLayer({
       id: 'scatter',
       type: GeoJsonLayer,
       data,
-      // data:'https://raw.githubusercontent.com/visgl/deck.gl-data/master/examples/geojson/vancouver-blocks.json',
-
-
-      // source: 'scatter',
       opacity: 0.4,
       filled: true,
-      // pointRadiusUnits: 'meters',
-      // pointRadiusMinPixels: 2,
       stroked: false,
       extruded: true,
       wireframe: true,
-      // pointRadiusScale: 80,
-      // getRadius: 20,
-      // getFillColor: [200, 40, 40, 180],
       pickable: true,
       autoHighlight: true,
       elevationScale: 1,
-      // getElevation: 100,
-      // getElevation: f => Math.sqrt(f.properties.valuePerSqm) * 10,
-      // getElevation: f => f.properties['C_np(kg/m3)'] * 1000,
-      getElevation: f => f.properties[this.renderValue] * 10000000000,
-      getFillColor: f => [160, 40, 40, f.properties[this.renderValue] * 10000000000],
-      // getFillColor: f => [200, 40, 40, 1000],
+      getElevation: f => f.properties[this.renderValue] * Number(this.elevationNumder),
+      // getFillColor: f => [160, 40, 40, f.properties[this.renderValue] * 10000000000],
+      getFillColor: f => colorScale(f.properties[this.renderValue], podVal),
       getLineColor: [100, 100, 100],
-
 
       onClick: ({ object, x, y }) => {
         this._dialogsService.onShowOutput(object, x, y, this.simulationType)
-
-        // console.log(x)
-        // console.log(y)
-        // if (!!object) {
-        //   let popup = new mapboxgl.Popup({
-        //     closeButton: true,
-        //     closeOnClick: false
-        //   });
-        //   this.objectHovered = object
-        //   let description = "<h5>Simulation values</h5>"
-        //   description = description + "<div class='simulation-out' style='max-height:200px; overflow:auto;'>"
-        //   for (let key of Object.keys(object['properties'])){
-        //     description = description + " <p>" + key + ": " + object['properties'][key] + "</p>"
-        //   }
-        //   description = description + "</div>"
-        //   description = description + "<p><button mat-flat-button onclick=' + { this.useAsInput() } + '> Use values</button> </p> "
-        //   popup.setLngLat(object.geometry.coordinates[0][0]).setHTML(description).addTo(m)
-        // }
-        // else{
-        //   // this.popup.remove()
-        // }
     }
     });
+
+    function colorScale(x, podVal) {
+      // if()
+      if(podVal == 0){
+        return [160, 40, 40, x * 10000000000]
+      }else{
+        const i = Math.floor(Math.log10(Math.abs(x)) + 1 );
+        // console.log(podVal)
+        // console.log("BEFORE")
+        // console.log(x)
+        x = podVal - x 
+        // console.log("AFTER")
+        // console.log(x)
+        if (x < 0) {
+          // console.log(i)
+          // const i = Math.round( Math.abs(x) * 10000000) + 4;
+          const j = Math.floor(Math.log10(Math.abs(x)) + 4 )
+          
+          // console.log(Math.abs(j))
+
+          return COLOR_SCALE[Math.abs(j)] || COLOR_SCALE[0];
+        }
+        // console.log(i)
+        return COLOR_SCALE[i] || COLOR_SCALE[COLOR_SCALE.length - 1];
+      }
+
+    }
+
     m.addLayer(scatter);
   }
 

@@ -41,10 +41,31 @@ export class SessionService{
 
     private configured = new Subject<String>();
 
+    private elevation = new Subject<Number>();
+
+    private podVal = new Subject<Number>();
+
+
     constructor(
         private _emissionsApi:EmissionsApiService
     ){
         
+    }
+
+    setPodVal(podVal){
+        this.podVal.next(podVal)
+    }
+
+    getPodVal():Observable<Number>{
+        return this.podVal.asObservable();
+    }
+
+    setElevation(elev){
+        this.elevation.next(elev)
+    }
+
+    getElevation():Observable<Number>{
+        return this.elevation.asObservable();
     }
 
     getSubjectId(): Observable<any>{

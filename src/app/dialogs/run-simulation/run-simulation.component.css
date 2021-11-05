@@ -1,6 +1,6 @@
 .dialog{
-    width:320px;
-    height:240px;
+    width:420px;
+    height:360px;
     overflow: auto;
 }
 
@@ -11,4 +11,29 @@
 .okb{
     float: right;
     margin-top: 1em;
+}
+
+.pbpk-toggle{
+    margin-top: 1em;
+}
+
+.pbpk{
+    width:100%;
+    height: 60px;
+    display: inline-flex;
+}
+
+.pbt{
+    float: left;
+    width:60%;
+    margin-top: 16px;
+}
+
+.pbd{
+    float: left;
+    width: 50%;
+}
+
+.date-pic{
+    width:100%;
 }

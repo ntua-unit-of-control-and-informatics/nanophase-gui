@@ -10,7 +10,15 @@ import { Task } from '../models/task';
 import { Subscription } from 'rxjs';
 import { filter } from 'rxjs/operators';
 import { GeoJson } from '../models/geojson';
+import { AbstractControl, FormControl, ValidationErrors, Validators } from '@angular/forms';
 
+
+export class NumberValidator {
+  static number(control: AbstractControl): ValidationErrors | null {
+      if (typeof +control.value === "number" && !isNaN(+control.value)) return null;;
+      return { notANumber: "The value is not a number"};
+  };
+}
 
 @Component({
   selector: 'app-show-simulation',
@@ -28,10 +36,14 @@ export class ShowSimulationComponent implements OnInit {
   _soilOutput:boolean = false;
   _sedimentOutput:boolean = false;
 
+  _biouptakeOutput:boolean = false;
+  
+  _biouptakePod:boolean = false
 
   _waterOutputDay:Number;
   _soilOutputDay:Number;
   _sedimentOutputDay:Number;
+  _biouptakeOutputDay:Number;
 
   _selectRender = [];
 
@@ -50,10 +62,31 @@ export class ShowSimulationComponent implements OnInit {
   vertical = false;
   tickInterval = 1;
 
+
+  autoTicksElev = true;
+  disabledElev = false;
+  invertElev = false;
+  maxElev:Number = 10000000000;
+  minElev = 10000;
+  showTicksElev = false;
+  stepElev = 2000;
+  thumbLabelElev = true;
+  valueElev = 1000000000;
+  verticalElev = false;
+  tickIntervalElev = 1000;
+
+
   view_output:string
 
   hide_c:boolean = false;
 
+  podVal:Number
+
+
+  podFormControl = new FormControl('', [
+    Validators.required,
+    Validators.pattern("^[+-]?([0-9]+([.][0-9]*)?|[.][0-9]+)"),
+  ]);
   // autoTicks = false;
   // disabled = false;
   // invert = false;
@@ -105,6 +138,12 @@ export class ShowSimulationComponent implements OnInit {
               if(s_key.split("_")[1] === 'sediment'){
                 this._sedimentOutput = true;
                 this._sedimentOutputDay = Number(s_key.split("_")[s_key.split("_").length -1])
+              }
+            })
+            this._task.simulationKeys.forEach(s_key =>{
+              if(s_key.split("_")[0] === 'biouptake'){
+                this._biouptakeOutput = true;
+                this._biouptakeOutputDay = Number(s_key.split("_")[s_key.split("_").length -1])
               }
             })
             // console.log(t)
@@ -172,7 +211,6 @@ export class ShowSimulationComponent implements OnInit {
       this._taskApi.getOneWithParam(httpParams).subscribe((t:Task)=>{
         this._task = t
         this._task.simulationKeys.forEach(s_key =>{
-          console.log(s_key.split("_")[1])
           if(s_key.split("_")[1] === 'water'){
             this._waterOutput = true;
             this._waterOutputDay = Number(s_key.split("_")[s_key.split("_").length -1])
@@ -199,9 +237,10 @@ export class ShowSimulationComponent implements OnInit {
     this.disabled = false;
     this.view_output = val
     if(val === 'water'){
+      this._biouptakePod = false
       this._sessionService.setShowSimulationOutput(val)
       this.max = this._waterOutputDay
-      
+      this._sessionService.setPodVal(0)
       let httpPars = new HttpParams().set('id', this._simulationId).set('output_type', this.view_output).set('day', "1")
       this._simulationApi.getOneWithParam(httpPars).subscribe((resp:GeoJson)=>{
         if(resp){
@@ -214,9 +253,10 @@ export class ShowSimulationComponent implements OnInit {
 
     }
     if(val === 'soil'){
+      this._biouptakePod = false
       this._sessionService.setShowSimulationOutput(val)
       this.max = this._soilOutputDay
-
+      this._sessionService.setPodVal(0)
       let httpPars = new HttpParams().set('id', this._simulationId).set('output_type', this.view_output).set('day', "1")
       this._simulationApi.getOneWithParam(httpPars).subscribe((resp:GeoJson)=>{
         if(resp){
@@ -228,8 +268,24 @@ export class ShowSimulationComponent implements OnInit {
       })
     }
     if(val === 'sediment'){
+      this._biouptakePod = false
+      this._sessionService.setPodVal(0)
       this._sessionService.setShowSimulationOutput(val)
       this.max = this._sedimentOutputDay
+      let httpPars = new HttpParams().set('id', this._simulationId).set('output_type', this.view_output).set('day', "1")
+      this._simulationApi.getOneWithParam(httpPars).subscribe((resp:GeoJson)=>{
+        if(resp){
+          this._selectRender = []
+          for(let key in resp.features[0].properties){
+            this._selectRender.push(key)
+          }
+        }
+      })
+    }
+    if(val === 'biouptake'){
+      this._biouptakePod = true
+      this._sessionService.setShowSimulationOutput(val)
+      this.max = this._biouptakeOutputDay
       let httpPars = new HttpParams().set('id', this._simulationId).set('output_type', this.view_output).set('day', "1")
       this._simulationApi.getOneWithParam(httpPars).subscribe((resp:GeoJson)=>{
         if(resp){
@@ -253,6 +309,13 @@ export class ShowSimulationComponent implements OnInit {
     })
   }
 
+  updateSliderElev(val){
+    this._sessionService.setElevation(val)
+    // if(val === 0){
+    //   val = 1
+    // }
+  }
+
   setRender(ev){
     // console.log(ev.value)
     this.selectedRenderValue = ev.value
@@ -267,5 +330,16 @@ export class ShowSimulationComponent implements OnInit {
   show(){
     this.hide_c = false
   }
+
+  onPodValChange(val:string){
+    // console.log(val)
+    
+    if (!this.podFormControl.hasError('pattern')){
+      if(val.length > 0){
+        this._sessionService.setPodVal(Number(val))
+      }
+    }
+  }
+
 
 }

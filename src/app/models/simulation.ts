@@ -8,4 +8,6 @@ export interface Simulation{
     date?:Number
     startDate?:String
     taskId?:string
+    pbpk?:boolean
+    pbpkDays?:Number
 }

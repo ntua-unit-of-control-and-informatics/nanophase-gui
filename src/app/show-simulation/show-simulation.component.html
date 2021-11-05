@@ -34,6 +34,7 @@
                 <mat-button-toggle value="water" *ngIf="_waterOutput" (change)="onValChange($event.value)">Water</mat-button-toggle>
                 <mat-button-toggle value="soil" *ngIf="_soilOutput" (change)="onValChange($event.value)">Soil</mat-button-toggle>
                 <mat-button-toggle value="sediment" *ngIf="_sedimentOutput" (change)="onValChange($event.value)">Sediment</mat-button-toggle>
+                <mat-button-toggle value="biouptake" *ngIf="_biouptakeOutput" (change)="onValChange($event.value)">Biouptake</mat-button-toggle>
               </mat-button-toggle-group>
           </p>
 
@@ -67,6 +68,27 @@
                 [vertical]="vertical">
             </mat-slider>
           </p>
+
+
+
+          <p class="output_elev">
+            Set elevation:
+          <mat-slider
+              class="slider2"
+              (change)="updateSliderElev($event.value)"
+              [disabled]="disabledElev"
+              [invert]="invertElev"
+              [max]="maxElev"
+              [min]="minElev"
+              [step]="stepElev"
+              [thumbLabel]="thumbLabelElev"
+              [tickInterval]="getSliderTickInterval()"
+              [(ngModel)]="valueElev"
+              [vertical]="verticalElev">
+          </mat-slider>
+        </p>
+
+
       </mat-card-content>
 </mat-card>
 
@@ -81,4 +103,28 @@
         <mat-icon>keyboard_arrow_up</mat-icon>
       </button>
   </mat-card-header>
+</mat-card>
+
+
+
+<mat-card class="biouptake_pod" *ngIf="_biouptakePod">
+  <mat-card-header>
+      <mat-card-subtitle>Add point off departure value for the organization if available</mat-card-subtitle>
+
+  </mat-card-header>
+  <mat-card-content>
+    <form class="pod-form">
+      <mat-form-field class="pod-input">
+        <mat-label>Pod value</mat-label>
+        <input matInput placeholder="pod value" 
+              [formControl]="podFormControl"
+              [(ngModel)]="podVal" 
+              
+              (input)="onPodValChange($event.target.value)">
+      </mat-form-field>
+      <mat-error *ngIf="podFormControl.hasError('pattern')" class="err-pod">
+        Please enter a number
+      </mat-error>
+    </form>
+  </mat-card-content>
 </mat-card>

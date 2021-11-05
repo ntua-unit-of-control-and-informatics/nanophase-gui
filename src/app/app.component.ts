@@ -87,4 +87,9 @@ export class AppComponent implements OnInit{
     this._sessionService.set('theme', event.value)
   }
 
+
+  downloadTutorial(){
+    window.open('/assets/tutorial.pdf', '_blank');
+  }
+
 }

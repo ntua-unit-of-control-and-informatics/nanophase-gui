@@ -12,12 +12,38 @@
           </mat-form-field>
       </form>
 
-      <mat-form-field>
+      <mat-form-field class="date-pic">
         <mat-label>Choose a start date for the simulation</mat-label>
         <input matInput [matDatepicker]="picker" [(ngModel)]="startDate" [ngModelOptions]="{standalone: true}">
         <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
         <mat-datepicker #picker></mat-datepicker>
       </mat-form-field>
+
+
+      <section class="example-section">
+        <div class="pbpk">
+
+          <mat-slide-toggle
+          class="pbpk-toggle"
+          [checked]="addpbpk"
+          (change)="toggle($event)" class="pbt">
+            Add biouptake
+          </mat-slide-toggle>
+
+          <div *ngIf="addpbpk" class="pbd"> 
+            <mat-form-field>
+              <mat-label>Biouptake simulation days</mat-label>
+              <input matInput placeholder="Days" [(ngModel)]="pbpkDays" [ngModelOptions]="{standalone: true}">
+              <mat-hint align="start"><strong>Minimum required value is 365</strong> </mat-hint>
+            </mat-form-field>
+          </div>
+
+        </div>
+
+
+      </section>
+
+
 
       <button mat-raised-button color="primary" (click)="onSave()" class="okb">Ok</button>
 </div>
