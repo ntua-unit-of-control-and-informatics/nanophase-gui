@@ -65,6 +65,7 @@ import { ShowSimulationComponent } from './show-simulation/show-simulation.compo
 import { ShowPointOutComponent } from './dialogs/show-point-out/show-point-out.component';
 import { ConfirmationComponent } from './dialogs/confirmation/confirmation.component';
 import { MultilineD3Component } from './d3/multiline-d3/multiline-d3.component';
+import { NgApexchartsModule } from "ng-apexcharts";
 
 @NgModule({
   declarations: [
@@ -85,7 +86,7 @@ import { MultilineD3Component } from './d3/multiline-d3/multiline-d3.component';
     MultilineD3Component
   ],
   imports: [
-    BrowserModule, FormsModule, MatSliderModule,MatSlideToggleModule, ReactiveFormsModule, MatMenuModule,MatDialogModule, MatProgressSpinnerModule, MatDatepickerModule, MatNativeDateModule, MatListModule,MatIconModule, HttpClientModule,MatExpansionModule,MatTooltipModule,MatFormFieldModule,MatInputModule,MatBottomSheetModule,MatSelectModule,
+    NgApexchartsModule, BrowserModule, FormsModule, MatSliderModule,MatSlideToggleModule, ReactiveFormsModule, MatMenuModule,MatDialogModule, MatProgressSpinnerModule, MatDatepickerModule, MatNativeDateModule, MatListModule,MatIconModule, HttpClientModule,MatExpansionModule,MatTooltipModule,MatFormFieldModule,MatInputModule,MatBottomSheetModule,MatSelectModule,
     BrowserAnimationsModule,MatToolbarModule, MatPaginatorModule, MatInputModule,MatButtonModule,MatCardModule,MatButtonToggleModule,
     RouterModule.forRoot([
     { path: '', component: AppComponent },

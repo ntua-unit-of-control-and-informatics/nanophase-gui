@@ -62,6 +62,7 @@ export class AppComponent implements OnInit{
           this.loggedIn = false;
         }
       });
+
       this.configuration = this.oidcSecurityService.configuration;
       this.userData$ = this.oidcSecurityService.userData$;
       this.isAuthenticated$ = this.oidcSecurityService.isAuthenticated$;
@@ -73,6 +74,9 @@ export class AppComponent implements OnInit{
           .registerForEvents()
           .pipe(filter((notification) => notification.type === EventTypes.CheckSessionReceived))
           .subscribe((value) => console.log('CheckSessionReceived with value from app', value));
+
+      console.log('Bearer', this.oidcSecurityService.getToken());
+
   }  
 
   login() {

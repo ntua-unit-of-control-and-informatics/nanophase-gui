@@ -66,12 +66,12 @@ export class ShowSimulationComponent implements OnInit {
   autoTicksElev = true;
   disabledElev = false;
   invertElev = false;
-  maxElev:Number = 10000000000;
-  minElev = 10000;
+  maxElev:Number = 100;
+  minElev = 0;
   showTicksElev = false;
-  stepElev = 2000;
+  stepElev = 1;
   thumbLabelElev = true;
-  valueElev = 1000000000;
+  valueElev = 20;
   verticalElev = false;
   tickIntervalElev = 1000;
 
@@ -116,6 +116,7 @@ export class ShowSimulationComponent implements OnInit {
           this._simulationApi.getWithIdSecured(this._simulationId).subscribe((sim:Simulation) =>{
             this._simulation = sim
             this._sessionService.setSimulationForMap(sim)
+            this._sessionService.setMinMaxValues(sim)
             // console.log(sim)
           })
 
@@ -246,7 +247,9 @@ export class ShowSimulationComponent implements OnInit {
         if(resp){
           this._selectRender = []
           for(let key in resp.features[0].properties){
-            this._selectRender.push(key)
+            if ((key!="t") && (key!="datetime") && (key!="x") && (key!="y") && (key!="norths") && (key!="easts") && typeof resp.features[0][key] != 'string'){
+              this._selectRender.push(key)
+            }
           }
         }
       })
@@ -262,7 +265,9 @@ export class ShowSimulationComponent implements OnInit {
         if(resp){
           this._selectRender = []
           for(let key in resp.features[0].properties){
-            this._selectRender.push(key)
+            if ((key!="t") && (key!="datetime") && (key!="x") && (key!="y") && (key!="norths") && (key!="easts") && typeof resp.features[0][key] != 'string'){
+              this._selectRender.push(key)
+            }
           }
         }
       })
@@ -277,7 +282,9 @@ export class ShowSimulationComponent implements OnInit {
         if(resp){
           this._selectRender = []
           for(let key in resp.features[0].properties){
-            this._selectRender.push(key)
+            if ((key!="t") && (key!="datetime") && (key!="x") && (key!="y") && (key!="norths") && (key!="easts") && typeof resp.features[0][key] != 'string'){
+              this._selectRender.push(key)
+            }
           }
         }
       })
@@ -291,7 +298,9 @@ export class ShowSimulationComponent implements OnInit {
         if(resp){
           this._selectRender = []
           for(let key in resp.features[0].properties){
-            this._selectRender.push(key)
+            if ((key!="t") && (key!="datetime") && (key!="x") && (key!="y") && (key!="norths") && (key!="easts") && typeof resp.features[0][key] != 'string'){
+              this._selectRender.push(key)
+            }
           }
         }
       })

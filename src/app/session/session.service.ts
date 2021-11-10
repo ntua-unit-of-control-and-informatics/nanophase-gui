@@ -4,7 +4,7 @@ import {HttpClientModule, HttpClient} from '@angular/common/http';
 import { Emission } from '../models/emission';
 import { Scenario } from '../models/scenario';
 import { EmissionsApiService } from '../api-client/emissions-api.service';
-import { Simulation } from '../models/simulation';
+import { Simulation, MinMax } from '../models/simulation';
 
 
 @Injectable()
@@ -45,11 +45,22 @@ export class SessionService{
 
     private podVal = new Subject<Number>();
 
+    private minmaxValues:MinMax = {};
+
 
     constructor(
         private _emissionsApi:EmissionsApiService
     ){
         
+    }
+
+    setMinMaxValues(sim: Simulation){
+        this.minmaxValues = sim.minmax
+    }
+
+    
+    getMinMaxValues(){
+        return this.minmaxValues
     }
 
     setPodVal(podVal){
@@ -137,6 +148,9 @@ export class SessionService{
         this.setShowScenariosEmissions('false')
         this.setShowSimulationsEmissions('true')
         // this.scenarioForMap.next(sim)
+
+        console.log('serviceSim', sim)
+
         sim.emissions.forEach(em=>{
             this._emissionsApi.getWithIdSecured(em).subscribe(em=>{
                 if(em){

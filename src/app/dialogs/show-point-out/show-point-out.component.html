@@ -5,7 +5,7 @@
     <mat-dialog-content class="content">
         
             <p *ngFor="let val of object['properties'] | keyvalue">
-                {{val.key}} --> {{val.value}}
+                {{val.key}}: {{val.value}}
             </p>
 
     </mat-dialog-content>
@@ -40,7 +40,18 @@
     </mat-dialog-actions>   
 
     <div *ngIf="showPlots">
-        <app-multiline-d3 [xs]="xPlot" [ys]="yPlot"></app-multiline-d3>
+        <!-- <app-multiline-d3 [xs]="xPlot" [ys]="yPlot"></app-multiline-d3> -->
+        <apx-chart
+              [series]="chartOptions.series"
+              [chart]="chartOptions.chart"
+              [xaxis]="chartOptions.xaxis"          
+              [yaxis]="chartOptions.yaxis"
+              [dataLabels]="chartOptions.dataLabels"
+              [tooltip]="chartOptions.tooltip"
+              [grid]="chartOptions.grid"
+              [stroke]="chartOptions.stroke"
+              [title]="chartOptions.title"
+            ></apx-chart>
     </div>
     
 

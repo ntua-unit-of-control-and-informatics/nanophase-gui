@@ -10,4 +10,11 @@ export interface Simulation{
     taskId?:string
     pbpk?:boolean
     pbpkDays?:Number
+    minmax?:MinMax
+}
+
+export interface MinMax{
+    output_soil?:any
+    output_sediment?:any
+    output_water?:any
 }

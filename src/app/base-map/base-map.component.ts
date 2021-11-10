@@ -25,6 +25,9 @@ import { MapboxLayer } from '@deck.gl/mapbox';
 import { ScatterplotLayer } from '@deck.gl/layers';
 import { Geometry } from '../models/geometry';
 import { ThrowStmt } from '@angular/compiler';
+import { HttpParams } from '@angular/common/http';
+import { TaskApiService } from '../api-client/task-api.service';
+import { features } from 'process';
 
 
 @Component({
@@ -61,7 +64,7 @@ export class BaseMapComponent implements OnInit {
 
   objectHovered: any
 
-  elevationNumder:Number = 10000000000
+  elevationNumder:Number = 20
 
   podValue:Number = 0
 
@@ -80,6 +83,10 @@ export class BaseMapComponent implements OnInit {
 
     constructor(private _oidcService:OidcSecurityService
       , public sessionService:SessionService,
+
+      private _taskApi:TaskApiService,
+
+
       public bottomSheet:SheetsService,
       private _emissionsApi:EmissionsApiService,
       private _dialogsService:DialogsService,
@@ -264,7 +271,7 @@ export class BaseMapComponent implements OnInit {
 
 
       this.sessionService.getElevation().subscribe((elev:Number) =>{
-
+        console.log('elev', elev)
         if(elev){
           this.elevationNumder = elev
         }
@@ -300,6 +307,7 @@ export class BaseMapComponent implements OnInit {
         //   data.features[i] = newgf
         // }
         this.sessionService.getRenderValue().subscribe(val =>{
+          console.log('val',val)
           if(val){
             this.renderValue = val
           }
@@ -501,10 +509,11 @@ export class BaseMapComponent implements OnInit {
 
   setLayers(m: mapboxgl.Map, data: any, podVal: Number) {
     const layer = m.getLayer('scatter')
+    
+    console.log('0',layer)
     if (!!layer) {
       m.removeLayer('scatter')
     }
-
     
     const COLOR_SCALE = [
       // negative
@@ -530,6 +539,21 @@ export class BaseMapComponent implements OnInit {
 
     ];
 
+    let scaler = this.sessionService.getMinMaxValues() 
+    console.log('ground', data.features[202])
+
+
+    data.features.forEach(element => {
+      // console.log('before',element.properties[this.renderValue])
+      element.properties[this.renderValue] = (element.properties[this.renderValue]-scaler[data.output_type][this.renderValue][0])/(scaler[data.output_type][this.renderValue][1]-scaler[data.output_type][this.renderValue][0])
+      
+      // console.log('after',element.properties[this.renderValue])
+    });
+
+    console.log('scaled', data.features[202])
+    console.log('scaler', scaler[data.output_type][this.renderValue])
+
+    
     const scatter = new MapboxLayer({
       id: 'scatter',
       type: GeoJsonLayer,
@@ -542,40 +566,58 @@ export class BaseMapComponent implements OnInit {
       pickable: true,
       autoHighlight: true,
       elevationScale: 1,
-      getElevation: f => f.properties[this.renderValue] * Number(this.elevationNumder),
+      // getElevation: Number(this.elevationNumder)*1000,
+      getElevation: f => f.properties[this.renderValue] * Number(this.elevationNumder)*1000,
       // getFillColor: f => [160, 40, 40, f.properties[this.renderValue] * 10000000000],
       getFillColor: f => colorScale(f.properties[this.renderValue], podVal),
       getLineColor: [100, 100, 100],
 
       onClick: ({ object, x, y }) => {
+        object.properties[this.renderValue] = object.properties[this.renderValue] * (scaler[data.output_type][this.renderValue][1] - scaler[data.output_type][this.renderValue][0]) +scaler[data.output_type][this.renderValue][0]
+        console.log('reverse',object)
         this._dialogsService.onShowOutput(object, x, y, this.simulationType)
     }
     });
 
-    function colorScale(x, podVal) {
-      // if()
-      if(podVal == 0){
-        return [160, 40, 40, x * 10000000000]
-      }else{
-        const i = Math.floor(Math.log10(Math.abs(x)) + 1 );
-        // console.log(podVal)
-        // console.log("BEFORE")
-        // console.log(x)
-        x = podVal - x 
-        // console.log("AFTER")
-        // console.log(x)
-        if (x < 0) {
-          // console.log(i)
-          // const i = Math.round( Math.abs(x) * 10000000) + 4;
-          const j = Math.floor(Math.log10(Math.abs(x)) + 4 )
-          
-          // console.log(Math.abs(j))
+    console.log('3',scatter)
 
-          return COLOR_SCALE[Math.abs(j)] || COLOR_SCALE[0];
-        }
-        // console.log(i)
-        return COLOR_SCALE[i] || COLOR_SCALE[COLOR_SCALE.length - 1];
+    function colorScale(x, podVal) {
+      if(podVal != 0){
+
+        podVal = (podVal-scaler[data.output_type][this.renderValue][0])/(scaler[data.output_type][this.renderValue][1]-scaler[data.output_type][this.renderValue][0])
+        x = podVal - x 
       }
+     
+      if (x<0){
+        x = 0
+      }
+
+      if (x>1){
+        x =1
+      }
+
+      return [Math.round(255 - 20*x), Math.round((1 - x)*237), Math.round((1 - x)*139 + 38)]
+        // return [160, 40, 40, x * 1000000000000000]
+      // }else{
+      //   const i = Math.floor(Math.log10(Math.abs(x)) + 1 );
+      //   // console.log(podVal)
+      //   // console.log("BEFORE")
+      //   // console.log(x)
+      //   x = podVal - x 
+      //   // console.log("AFTER")
+      //   // console.log(x)
+      //   if (x < 0) {
+      //     // console.log(i)
+      //     // const i = Math.round( Math.abs(x) * 10000000) + 4;
+      //     const j = Math.floor(Math.log10(Math.abs(x)) + 4 )
+          
+      //     // console.log(Math.abs(j))
+
+      //     return COLOR_SCALE[Math.abs(j)] || COLOR_SCALE[0];
+      //   }
+      //   // console.log(i)
+      //   return COLOR_SCALE[i] || COLOR_SCALE[COLOR_SCALE.length - 1];
+      // }
 
     }
 
