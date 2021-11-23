@@ -23,6 +23,10 @@
     </mat-button-toggle>
   </mat-button-toggle-group>
 
+  <div *ngIf = "showLegend.show" class="color-legend">
+    <app-color-legend [outputView]="showLegend.type" [minValue]="showLegend.minValue" [maxValue]="showLegend.maxValue"></app-color-legend>
+  </div>
+
 </div>
 
 <ng-template #loggedOut>

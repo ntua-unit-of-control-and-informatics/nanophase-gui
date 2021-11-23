@@ -62,7 +62,21 @@ export class ShowPointOutComponent implements OnInit {
           this.object['properties'][key] = Number(Number(split[0]).toFixed(3).toString().concat('e').concat(split[1]))  
         }
         else{
-          this.object['properties'][key] = value.toFixed(3)
+          // this.object['properties'][key] = value.toFixed(3)
+            
+            let split = valueString.split('.')
+            for (const c of split[1]) {
+              if (c !== '0'){
+                if (split[1].indexOf(c)>2){
+                  this.object['properties'][key] = Number(split[0].concat('.').concat(split[1].substring(split[1].indexOf(c)))).toFixed(3).toString().concat('e-').concat(split[1].indexOf(c).toString())
+                } else {
+                  this.object['properties'][key] = value.toFixed(3)
+                }
+                break
+              }
+             
+            }
+        
         }
       }
     }

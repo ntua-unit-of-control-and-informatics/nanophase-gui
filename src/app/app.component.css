@@ -21,6 +21,15 @@
 }
 
 
+.color-legend{
+    /* position: absolube; */
+    bottom:10px;
+    right: 50px;
+    height: 45px;
+    opacity: 0.9;
+}
+
+
 .nanosolveit{
     width: 120px;
     margin-left: 1em;

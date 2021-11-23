@@ -1,0 +1,16 @@
+<mat-card class="colorDiv">
+    
+    <mat-card-content>
+            
+        <div class="min-value">{{rMinValue}}</div>
+
+        <div class="legend-img">
+            <img *ngIf="podMap" class = "imgResize" src="/assets/pod_colormap_bar.png">
+            <img *ngIf="!podMap" class = "imgResize" src="/assets/colormap_bar.png">
+            
+        </div>
+      
+        <div class="max-value">{{rMaxValue}}</div>
+
+    </mat-card-content>
+</mat-card>

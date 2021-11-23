@@ -5,6 +5,7 @@ import { Emission } from '../models/emission';
 import { Scenario } from '../models/scenario';
 import { EmissionsApiService } from '../api-client/emissions-api.service';
 import { Simulation, MinMax } from '../models/simulation';
+import { Legend } from '../models/legend.model';
 
 
 @Injectable()
@@ -47,12 +48,55 @@ export class SessionService{
 
     private minmaxValues:MinMax = {};
 
+    // private colorLegend = new Subject<Boolean>();
+    private colorLegend = new Subject<Legend>();
+
+    private outputView: string;
+
+    private dataForLegend = new Subject<any>();
+
 
     constructor(
         private _emissionsApi:EmissionsApiService
     ){
         
     }
+
+    setDataLegend(data:any){
+        console.log('IN SESSION', data)
+        this.dataForLegend.next(data)
+    }
+
+    
+    getDataLegend(){
+        return this.dataForLegend.asObservable();
+    }
+
+    // setColorLegend(show: Boolean){
+    //     this.colorLegend.next(show)
+    // }
+
+    // showColorLegend():Observable<Boolean>{
+    //     return this.colorLegend.asObservable();
+    // }
+    
+    setColorLegend(legend: Legend){
+        this.colorLegend.next(legend)
+    }
+
+    showColorLegend():Observable<Legend>{
+        return this.colorLegend.asObservable();
+    }
+
+    setOutputView(v: string){
+        this.outputView = v
+    }
+
+    
+    getOutputView(){
+        return this.outputView
+    }
+
 
     setMinMaxValues(sim: Simulation){
         this.minmaxValues = sim.minmax
@@ -165,6 +209,10 @@ export class SessionService{
     }
 
     getRenderValue(){
+        // this.renderSimulationsKey.asObservable().subscribe((a:string)=>{
+        //     console.log('IASON',a)
+        // })
+        
         return this.renderSimulationsKey.asObservable()
     }
 

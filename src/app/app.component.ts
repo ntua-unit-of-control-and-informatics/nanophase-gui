@@ -5,6 +5,9 @@ import { Subscription, Observable } from 'rxjs';
 import { filter } from 'rxjs/operators';
 import { SessionService } from './session/session.service';
 import { MatButtonToggle } from '@angular/material/button-toggle';
+import { ThrowStmt } from '@angular/compiler';
+import { Legend } from './models/legend.model';
+
 
 @Component({
   selector: 'app-root',
@@ -17,6 +20,7 @@ export class AppComponent implements OnInit{
   loggedIn:boolean;
   subscription:Subscription;
   isAuthorizedSubscription: Subscription;
+  showLegendSubscription: Subscription;
   isAuthorized: boolean;
 
   configuration: PublicConfiguration;
@@ -26,9 +30,13 @@ export class AppComponent implements OnInit{
   checkSessionChanged$: Observable<boolean>;
   checkSessionChanged: any;
 
+  showLegend: Legend = {
+    show: false
+  }
   // showSimulation:boolean = false;
 
   selectedTheme:string = "default-theme"
+
 
   constructor(
     public oidcSecurityService: OidcSecurityService,
@@ -50,7 +58,22 @@ export class AppComponent implements OnInit{
   }
 
   ngOnInit( ) {
+
+
+
     let theme = this._sessionService.get('theme')
+    this.showLegendSubscription = this._sessionService.showColorLegend().subscribe((legend: Legend) => {
+      // console.log('app main comp', this._sessionService.getMinMaxValues())
+      this.showLegend = legend
+      // if(x === true){
+      //   this.showLegend = true;
+      // }else{
+      //   this.showLegend = false;
+      // }
+    });
+
+    console.log('show', this.showLegend)
+
     if(theme){
       this.selectedTheme = theme
     }

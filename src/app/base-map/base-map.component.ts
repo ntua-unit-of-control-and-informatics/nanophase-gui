@@ -68,6 +68,13 @@ export class BaseMapComponent implements OnInit {
 
   podValue:Number = 0
 
+  minValue: Number;
+  maxValue: Number;
+  rMinValue: string;
+  rMaxValue: string;
+  colormap: Boolean = false;
+  podMap: Boolean = false;
+
   bounds = new mapboxgl.LngLatBounds(
     new mapboxgl.LngLat(-3.94, 50.30),// Dutika-Notio coordinates
     new mapboxgl.LngLat(1.92, 52.64)  // Anatolika-Borio coordinates
@@ -271,7 +278,7 @@ export class BaseMapComponent implements OnInit {
 
 
       this.sessionService.getElevation().subscribe((elev:Number) =>{
-        console.log('elev', elev)
+        // console.log('elev', elev)
         if(elev){
           this.elevationNumder = elev
         }
@@ -307,7 +314,7 @@ export class BaseMapComponent implements OnInit {
         //   data.features[i] = newgf
         // }
         this.sessionService.getRenderValue().subscribe(val =>{
-          console.log('val',val)
+          // console.log('val',val)
           if(val){
             this.renderValue = val
           }
@@ -494,7 +501,7 @@ export class BaseMapComponent implements OnInit {
         simulation.pbpkDays = res['pbpkDays']
 
         this._simulationApi.post(simulation).subscribe((res:Simulation) =>{
-          console.log(res)
+          // console.log(res)
         })
         // this.scenarioOnScreen = false;        
       }
@@ -510,7 +517,7 @@ export class BaseMapComponent implements OnInit {
   setLayers(m: mapboxgl.Map, data: any, podVal: Number) {
     const layer = m.getLayer('scatter')
     
-    console.log('0',layer)
+    // console.log('0',layer)
     if (!!layer) {
       m.removeLayer('scatter')
     }
@@ -539,20 +546,44 @@ export class BaseMapComponent implements OnInit {
 
     ];
 
+    let outputView = this.sessionService.getOutputView()
+
     let scaler = this.sessionService.getMinMaxValues() 
-    console.log('ground', data.features[202])
+    this.minValue = scaler[outputView][this.renderValue][0]
+    this.maxValue = scaler[outputView][this.renderValue][1]
+    
+    if (outputView !== "output_biouptake"){
+      podVal=0
+    } 
+    
+    
+    console.log (
+      data.features[202].properties[this.renderValue], 
+      elevScale(data.features[202].properties[this.renderValue], this.minValue, this.maxValue)  * Number(this.elevationNumder) * 1000000,
+      podVal, 
+      this.minValue, 
+      this.maxValue
+      )
 
 
-    data.features.forEach(element => {
-      // console.log('before',element.properties[this.renderValue])
-      element.properties[this.renderValue] = (element.properties[this.renderValue]-scaler[data.output_type][this.renderValue][0])/(scaler[data.output_type][this.renderValue][1]-scaler[data.output_type][this.renderValue][0])
-      
-      // console.log('after',element.properties[this.renderValue])
+      // this.sessionService.setColorLegend(true);
+    this.sessionService.setColorLegend({
+      show: true,
+      type: data.outputType,
+      minValue: this.minValue,
+      maxValue: this.maxValue,
+      podVal: podVal
     });
 
-    console.log('scaled', data.features[202])
-    console.log('scaler', scaler[data.output_type][this.renderValue])
-
+    console.log('basemap', {
+      show: true,
+      type: data.outputType,
+      minValue: this.minValue,
+      maxValue: this.maxValue,
+      podVal: podVal
+    })
+      // this.colormap = true;
+    
     
     const scatter = new MapboxLayer({
       id: 'scatter',
@@ -566,37 +597,115 @@ export class BaseMapComponent implements OnInit {
       pickable: true,
       autoHighlight: true,
       elevationScale: 1,
-      // getElevation: Number(this.elevationNumder)*1000,
-      getElevation: f => f.properties[this.renderValue] * Number(this.elevationNumder)*1000,
+      getElevation: f => {
+        return elevScale(f.properties[this.renderValue], this.minValue, this.maxValue)  * Number(this.elevationNumder) * 1000
+      },
+      // getElevation: f =>{ getPlotNum(f.properties[this.renderValue], podVal, this.minValue, this.maxValue) * Number(this.elevationNumder)*1000},
       // getFillColor: f => [160, 40, 40, f.properties[this.renderValue] * 10000000000],
-      getFillColor: f => colorScale(f.properties[this.renderValue], podVal),
+      getFillColor: f => {
+        
+        if (podVal==0){
+          return colorScale(f.properties[this.renderValue], this.minValue, this.maxValue)
+        } else{
+          return colorScalePod(f.properties[this.renderValue], podVal)
+        }
+        
+      },
       getLineColor: [100, 100, 100],
 
       onClick: ({ object, x, y }) => {
-        object.properties[this.renderValue] = object.properties[this.renderValue] * (scaler[data.output_type][this.renderValue][1] - scaler[data.output_type][this.renderValue][0]) +scaler[data.output_type][this.renderValue][0]
-        console.log('reverse',object)
+        // object.properties[this.renderValue] = object.properties[this.renderValue] * (this.maxValue - this.minValue) +this.minValue
+        // console.log('reverse',object)
         this._dialogsService.onShowOutput(object, x, y, this.simulationType)
     }
     });
 
-    console.log('3',scatter)
+    // console.log('3',scatter)
 
-    function colorScale(x, podVal) {
-      if(podVal != 0){
+    
 
-        podVal = (podVal-scaler[data.output_type][this.renderValue][0])/(scaler[data.output_type][this.renderValue][1]-scaler[data.output_type][this.renderValue][0])
-        x = podVal - x 
-      }
+    function elevScale(x, min, max){
      
-      if (x<0){
-        x = 0
+      if (min !== max){
+        x = (x-min)/(max-min)
+      } else {
+        x = 0.5
       }
+      return x
+    }
 
-      if (x>1){
-        x =1
+
+    function colorScalePod(x, podVal) {
+      
+      let div = x/podVal
+     
+      if(div<0.001){
+
+        return [143,241,63]
+      
+      } else if (div>=0.001 && div<0.01){
+        
+        return [Math.round(3333.333333333333*div) + 140, Math.round(1555.5555555555554*div) + 239, Math.round(1444.4444444444443*div) + 62]
+      
+      } else if (div>=0.01 && div<0.1){
+        
+        return [Math.round(622.2222222222222*div) + 167, Math.round(-0.0*div) + 255, Math.round(311.1111111111111*div) + 73]
+      
+      } else if (div>=0.1 && div<1){
+        
+        return [Math.round(26.666666666666664*div) + 226, Math.round(-0.0*div) + 255, Math.round(48.888888888888886*div) + 99]
+      
+      } else if (div>=1 && div<10){
+        
+        return [Math.round(-2.2222222222222223*div) + 255, Math.round(-7.666666666666667*div) + 263, Math.round(-6.777777777777778*div) + 155]
+      
+      } else if (div>=10 && div<100){
+        
+        return [Math.round(-0.18888888888888888*div) + 235, Math.round(-0.9777777777777777*div) + 196, Math.round(-0.25555555555555554*div) + 90]
+      
+      } else if (div>=100 && div<10000){
+        
+        return [Math.round(-0.000505050505050505*div) + 216, Math.round(-0.0032323232323232323*div) + 98, Math.round(0.00010101010101010101*div) + 64]
+      
+      } else {
+        
+        return [211,66,65]
       }
+    }
 
-      return [Math.round(255 - 20*x), Math.round((1 - x)*237), Math.round((1 - x)*139 + 38)]
+    function colorScale(x, min, max) {
+      // if(podVal != 0){
+      //   if (min !== max){
+      //     podVal = (podVal-min)/(max-min)
+      //   } else if (min !== 0.0) {
+      //     podVal = podVal / podVal - 1
+      //   } else {
+      //     // nothing
+      //   }
+
+      //   x = Math.floor(Math.log10(Math.abs(podVal)) + 2 )/Math.floor(Math.log10(Math.abs(x)) + 2 )
+      // }
+     
+      if (min !== max){
+        x = (x-min)/(max-min)
+      } else {
+        x = 0.0
+      }
+      // if (x<0){
+      //   x = 0
+      // }
+
+      // if (x>1){
+      //   x =1
+      // }
+
+      // x = getPlotNum(x, podVal, min, max)
+
+      // if (x < 0.5){
+      //   return [Math.round(116*x + 143), Math.round(24*x + 241), Math.round(160*x + 63)]
+      // } 
+
+      return [Math.round(255-40*x), Math.round((1 - x)*237+20), Math.round((1 - x)*139 + 50)]
         // return [160, 40, 40, x * 1000000000000000]
       // }else{
       //   const i = Math.floor(Math.log10(Math.abs(x)) + 1 );

@@ -237,6 +237,8 @@ export class ShowSimulationComponent implements OnInit {
   onValChange(val){
     this.disabled = false;
     this.view_output = val
+    this._sessionService.setOutputView("output_"+this.view_output)
+
     if(val === 'water'){
       this._biouptakePod = false
       this._sessionService.setShowSimulationOutput(val)
@@ -326,9 +328,15 @@ export class ShowSimulationComponent implements OnInit {
   }
 
   setRender(ev){
-    // console.log(ev.value)
+    console.log("RENDER",ev.value)
     this.selectedRenderValue = ev.value
     this._sessionService.setRenderValue(ev.value)
+
+    this._sessionService.setDataLegend({
+      outputView: this.view_output,
+      renderValue: ev.value,
+      pod: this.podVal
+    })
     // this._sessionService.setShowSimsGEOJson(resp)
   }
 

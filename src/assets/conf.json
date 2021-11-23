@@ -1,5 +1,5 @@
 {
-    "nanoFaseApi": "http://192.168.1.6:5000/",
+    "nanoFaseApi": "http://localhost:5000/",
     "__nanoFaseApi": "http://localhost:5001/",
     "__stsServer": "https://login.jaqpot.org/auth/realms/jaqpot",
     "stsServer": "https://login.cloud.nanosolveit.eu/auth/realms/nanosolveit",

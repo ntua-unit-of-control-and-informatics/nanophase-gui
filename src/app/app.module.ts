@@ -66,6 +66,7 @@ import { ShowPointOutComponent } from './dialogs/show-point-out/show-point-out.c
 import { ConfirmationComponent } from './dialogs/confirmation/confirmation.component';
 import { MultilineD3Component } from './d3/multiline-d3/multiline-d3.component';
 import { NgApexchartsModule } from "ng-apexcharts";
+import { ColorLegendComponent } from './color-legend/color-legend.component';
 
 @NgModule({
   declarations: [
@@ -83,7 +84,8 @@ import { NgApexchartsModule } from "ng-apexcharts";
     ShowSimulationComponent,
     ShowPointOutComponent,
     ConfirmationComponent,
-    MultilineD3Component
+    MultilineD3Component,
+    ColorLegendComponent
   ],
   imports: [
     NgApexchartsModule, BrowserModule, FormsModule, MatSliderModule,MatSlideToggleModule, ReactiveFormsModule, MatMenuModule,MatDialogModule, MatProgressSpinnerModule, MatDatepickerModule, MatNativeDateModule, MatListModule,MatIconModule, HttpClientModule,MatExpansionModule,MatTooltipModule,MatFormFieldModule,MatInputModule,MatBottomSheetModule,MatSelectModule,
