@@ -72,7 +72,7 @@ export class AppComponent implements OnInit{
       // }
     });
 
-    console.log('show', this.showLegend)
+    // console.log('show', this.showLegend)
 
     if(theme){
       this.selectedTheme = theme
@@ -98,7 +98,7 @@ export class AppComponent implements OnInit{
           .pipe(filter((notification) => notification.type === EventTypes.CheckSessionReceived))
           .subscribe((value) => console.log('CheckSessionReceived with value from app', value));
 
-      console.log('Bearer', this.oidcSecurityService.getToken());
+      // console.log('Bearer', this.oidcSecurityService.getToken());
 
   }  
 

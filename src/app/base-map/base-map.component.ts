@@ -557,31 +557,31 @@ export class BaseMapComponent implements OnInit {
     } 
     
     
-    console.log (
-      data.features[202].properties[this.renderValue], 
-      elevScale(data.features[202].properties[this.renderValue], this.minValue, this.maxValue)  * Number(this.elevationNumder) * 1000000,
-      podVal, 
-      this.minValue, 
-      this.maxValue
-      )
+    // console.log (
+    //   data.features[202].properties[this.renderValue], 
+    //   elevScale(data.features[202].properties[this.renderValue], this.minValue, this.maxValue)  * Number(this.elevationNumder) * 1000000,
+    //   podVal, 
+    //   this.minValue, 
+    //   this.maxValue
+    //   )
 
 
       // this.sessionService.setColorLegend(true);
     this.sessionService.setColorLegend({
       show: true,
-      type: data.outputType,
+      type: outputView,
       minValue: this.minValue,
       maxValue: this.maxValue,
       podVal: podVal
     });
 
-    console.log('basemap', {
-      show: true,
-      type: data.outputType,
-      minValue: this.minValue,
-      maxValue: this.maxValue,
-      podVal: podVal
-    })
+    // console.log('basemap', {
+    //   show: true,
+    //   type: data.outputType,
+    //   minValue: this.minValue,
+    //   maxValue: this.maxValue,
+    //   podVal: podVal
+    // })
       // this.colormap = true;
     
     

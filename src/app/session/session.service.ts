@@ -63,7 +63,7 @@ export class SessionService{
     }
 
     setDataLegend(data:any){
-        console.log('IN SESSION', data)
+        // console.log('IN SESSION', data)
         this.dataForLegend.next(data)
     }
 
@@ -193,7 +193,7 @@ export class SessionService{
         this.setShowSimulationsEmissions('true')
         // this.scenarioForMap.next(sim)
 
-        console.log('serviceSim', sim)
+        // console.log('serviceSim', sim)
 
         sim.emissions.forEach(em=>{
             this._emissionsApi.getWithIdSecured(em).subscribe(em=>{
