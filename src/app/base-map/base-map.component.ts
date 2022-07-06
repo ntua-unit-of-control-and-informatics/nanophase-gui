@@ -4,7 +4,7 @@ import * as mapboxgl from 'mapbox-gl';
 import { environment } from 'src/environments/environment.prod';
 import { OidcSecurityService } from 'angular-auth-oidc-client';
 import { SessionService } from '../session/session.service';
-import { Observable, Subscription, of } from 'rxjs';
+import { Observable, Subscription, of, from } from 'rxjs';
 import { SheetsService } from '../bottom-sheets/sheets-services.service';
 import { EmissionsApiService } from '../api-client/emissions-api.service';
 import { Emission } from '../models/emission';
@@ -28,6 +28,7 @@ import { ThrowStmt } from '@angular/compiler';
 import { HttpParams } from '@angular/common/http';
 import { TaskApiService } from '../api-client/task-api.service';
 import { features } from 'process';
+import { concatMap, flatMap, mergeMap, tap } from 'rxjs/operators';
 
 
 @Component({
@@ -244,12 +245,25 @@ export class BaseMapComponent implements OnInit {
         this.draw.deleteAll()
         if(scen){
           this.sessionService.setShowScenariosEmissions("true")
-          scen.emissions.forEach((emId:string)=>{
-            this._emissionsApi.getWithIdSecured(emId).subscribe((em:Emission)=>{
-              this.draw.add(em)
-              this.sessionService.setScenariosEmissions(em)
-            })
+
+          from(scen.emissions).pipe(
+            mergeMap((entity) => {
+               return  this._emissionsApi.getWithIdSecured(entity)
+              }
+             ,200 
+            )  
+          ).subscribe((em:Emission)=>{
+            this.draw.add(em)
+            this.sessionService.setScenariosEmissions(em)
           })
+
+          // scen.emissions.forEach((emId:string)=>{
+          //   this._emissionsApi.getWithIdSecured(emId).subscribe((em:Emission)=>{
+          //     this.draw.add(em)
+          //     this.sessionService.setScenariosEmissions(em)
+          //   })
+          // })
+          
           this.scenarioOnScreen = true;
           this.checkSaveScenario()
         }
